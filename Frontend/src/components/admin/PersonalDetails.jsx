@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { Img } from "../Img";
-import { Button } from "../Button";
 import { ReactIcons } from "../constants/react_icons";
 
 export const PersonalDetails = () => {
@@ -51,39 +49,39 @@ export const PersonalDetails = () => {
       </div>
       <div className="flex justify-between items-center px-13 py-3 border-b border-gray-300 text-sm">
         <b>Work Experience</b>
-        <Button className="flex items-center text-[#1177BD] text-xs font-bold gap-1">
+        <button className="flex items-center text-[#1177BD] text-xs font-bold gap-1">
           <ReactIcons.IoAdd /> Add
-        </Button>
+        </button>
       </div>
       <div className="flex justify-between items-center px-13 py-3 border-b border-gray-300 text-sm">
         <b>Salary</b>
-        <Button className="flex items-center text-[#1177BD] text-xs font-bold gap-1">
+        <button className="flex items-center text-[#1177BD] text-xs font-bold gap-1">
           <ReactIcons.IoAdd /> Add
-        </Button>
+        </button>
       </div>
       <div className="flex justify-between items-center px-13 py-3 border-b border-gray-300 text-sm">
         <b>Bank Details</b>
-        <Button className="flex items-center text-[#1177BD] text-xs font-bold gap-1">
+        <button className="flex items-center text-[#1177BD] text-xs font-bold gap-1">
           <ReactIcons.IoAdd /> Add
-        </Button>
+        </button>
       </div>
       <div className="flex justify-between items-center px-13 py-3 border-b border-gray-300 text-sm">
         <b>Attachments</b>
-        <Button className="flex items-center text-[#1177BD] text-xs font-bold gap-1">
+        <button className="flex items-center text-[#1177BD] text-xs font-bold gap-1">
           <ReactIcons.IoAdd /> Add
-        </Button>
+        </button>
       </div>
       <div className="flex justify-between items-center px-13 py-3 border-b border-gray-300 text-sm">
         <b>Skills</b>
-        <Button className="flex items-center text-[#1177BD] text-xs font-bold gap-1">
+        <button className="flex items-center text-[#1177BD] text-xs font-bold gap-1">
           <ReactIcons.IoAdd /> Add
-        </Button>
+        </button>
       </div>
       <div className="flex justify-between items-center px-13 py-3 border-b border-gray-300 text-sm">
         <b>ID Proof</b>
-        <Button className="flex items-center text-[#1177BD] text-xs font-bold gap-1">
+        <button className="flex items-center text-[#1177BD] text-xs font-bold gap-1">
           <ReactIcons.IoAdd /> Add
-        </Button>
+        </button>
       </div>
     </div>
   );

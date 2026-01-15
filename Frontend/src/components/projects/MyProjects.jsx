@@ -3,10 +3,9 @@ import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { LinearProgress } from "@mui/material";
 import { Box } from "@mui/system";
-import { BackButton } from "../BackButton";
-import { Button } from "../Button";
-import { AvatarGroup } from "../AvatarGroup";
-import { Loader } from "../Loading";
+import { BackButton } from "../common/BackButton";
+import { AvatarGroup } from "../common/AvatarGroup";
+import { Loader } from "../common/Loading";
 import { ReactIcons } from "../constants/react_icons";
 import { fetchProjects } from "../../service/project";
 import { getColorOnPercentage } from "../../utils/helpingFns";
@@ -81,9 +80,9 @@ export const MyProjects = () => {
                   <p className="p-0.5">Status: {p.status}</p>
                 </div>
                 <div className="flex flex-col-reverse">
-                  <Button className="py-1 px-2 w-max rounded-xs text-[10px] bg-[#F7BE4A]">
+                  <button className="py-1 px-2 w-max rounded-xs text-[10px] bg-[#F7BE4A]">
                     Track Time
-                  </Button>
+                  </button>
                 </div>
               </div>
               <div>

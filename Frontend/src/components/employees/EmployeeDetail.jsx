@@ -1,21 +1,27 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Button } from "../Button";
-import { Img } from "../Img";
-import { MultiTabs } from "../MultiTabs";
-import { BackButton } from "../BackButton";
-import { Table } from "../Table";
-import { AvatarGroup } from "../AvatarGroup";
-import { FullScreenLoader, PulseLoader, SkeletonLoader } from "../Loading";
+import toast from "react-hot-toast";
+import { MultiTabs } from "../common/MultiTabs";
+import { BackButton } from "../common/BackButton";
+import { Table } from "../common/Table";
+import { AvatarGroup } from "../common/AvatarGroup";
+import {
+  FullScreenLoader,
+  PulseLoader,
+  SkeletonLoader,
+} from "../common/Loading";
+import { StatusModal } from "../common/StatusModal";
+import { StatusBadge } from "../common/StatusBadge";
 import { WorkTImeEntries } from "../time_entries/WorkTImeEntries";
 import { ManageProjects } from "../projects/Projects";
 import { ReactIcons } from "../constants/react_icons";
 import { images } from "../constants/images";
-import { getEmployee } from "../../service/employee";
+import { getEmployee, toggleEmployeeStatus } from "../../service/employee";
 import { fetchTimeEntries } from "../../service/timeEntries";
 import { fetchProjects } from "../../service/project";
 import { getToday } from "../../utils/helpingFns";
+import { useCallback } from "react";
 
 const ProjectCol = [
   {
@@ -60,9 +66,10 @@ const ProjectCol = [
 export const EmployeeDetail = () => {
   const { empId } = useParams();
   const [user, setUser] = useState(null);
-  // const [projects, setProjects] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState({ user: true, project: false });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState("");
 
   async function fetchUserData() {
     try {
@@ -94,6 +101,32 @@ export const EmployeeDetail = () => {
     // fetchProjectsFn();
   }, [empId]);
 
+  const handleOpenModal = () => {
+    setSelectedStatus(user?.status || "");
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleSetStatus = async () => {
+    // setUser({ ...user, status: selectedStatus });
+    setLoading(true);
+    try {
+      const res = await toggleEmployeeStatus(empId, selectedStatus);
+      setUser(res.data);
+      toast.success(res.message);
+    } catch (error) {
+      console.log("err: ", error);
+      toast.error(error.response?.data.message);
+    } finally {
+      setLoading(false);
+    }
+
+    handleCloseModal();
+  };
+
   return (
     <div>
       <BackButton
@@ -124,18 +157,17 @@ export const EmployeeDetail = () => {
                 </div>
               </div>
               <div className="flex flex-col gap-6">
-                <span className="px-5 py-1 text-green-800 bg-[#C6F6D5] rounded-2xl mr-2 w-fit">
-                  {user.status}
-                </span>
+                <StatusBadge
+                  status={user.status}
+                  onClick={handleOpenModal}
+                  isClickable={true}
+                />
                 <div>
                   <button
                     onClick={() => navigate(`/employees/${user._id}/edit`)}
                     className="text-white bg-[#4A6CF7] py-1 px-6 mr-5"
                   >
                     Edit Profile
-                  </button>
-                  <button className="text-red-800 border border-red-800 py-1 px-6 ">
-                    Deactivate
                   </button>
                 </div>
               </div>
@@ -175,6 +207,15 @@ export const EmployeeDetail = () => {
           activeTabHeader: "bg-[#215675] text-white",
           inactiveTabHeader: "bg-white",
         }}
+      />
+
+      <StatusModal
+        statuses={["Active", "Inactive"]}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        selectedStatus={selectedStatus}
+        setSelectedStatus={setSelectedStatus}
+        onSubmit={handleSetStatus}
       />
     </div>
   );

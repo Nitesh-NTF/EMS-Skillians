@@ -147,3 +147,23 @@ export const fetchProjects = asyncHandler(async (req, res) => {
     const pagination = { total, page: pageNum || 1, limit: limitNum || total }
     successResponse(res, 200, "Projects fetch successfully", { projects, pagination })
 })
+
+export const toggleProjectStatus = asyncHandler(async (req, res) => {
+    const { id } = req.query
+    const { status } = req.body
+
+    if (!id) throw new ApiError(400, "Project ID is required")
+    if (!isValidObjectId(id)) throw new ApiError(400, "Pass valid project Id")
+    if (!status) throw new ApiError(400, "Status is required")
+
+    const validStatuses = ["Pending", "Start", "In Progress", "Blocked", "Complete"]
+    if (!validStatuses.includes(status)) {
+        throw new ApiError(400, "Status must be one of: Pending, Active, Inactive, Complete")
+    }
+
+    const project = await Project.findById(id)
+    if (!project) throw new ApiError(400, "Project not exists")
+
+    const updatedProject = await Project.findByIdAndUpdate(id, { status }, { new: true })
+    successResponse(res, 200, "Project status updated successfully", updatedProject)
+})

@@ -3,9 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import ReactSelect from "react-select";
 import toast from "react-hot-toast";
-import { BackButton } from "../BackButton";
-import { RequiredSign } from "../RequiredSign";
-import { FullScreenLoader } from "../Loading";
+import { BackButton } from "../common/BackButton";
+import { RequiredSign } from "../common/RequiredSign";
+import { FullScreenLoader } from "../common/Loading";
 import { images } from "../constants/images";
 import { addProject, updateProject, getProject } from "../../service/project";
 import { fetchEmployees } from "../../service/employee";
@@ -192,10 +192,11 @@ export const AddProject = () => {
               })}
             >
               {[
+                { key: "start", value: "Start" },
                 { key: "pending", value: "Pending" },
-                { key: "active", value: "Active" },
-                { key: "inactive", value: "Inactive" },
+                { key: "inprogress", value: "In Progress" },
                 { key: "complete", value: "Complete" },
+                { key: "blocked", value: "Blocked" },
               ].map((opt) => (
                 <option key={opt.key} value={opt.value}>
                   {opt.value}

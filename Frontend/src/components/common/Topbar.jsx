@@ -1,6 +1,6 @@
 import React from "react";
 import { FaBell } from "react-icons/fa";
-import { images } from "./constants/images";
+import { images } from "../constants/images";
 import { useSelector } from "react-redux";
 
 export const Topbar = () => {

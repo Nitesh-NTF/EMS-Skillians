@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { images } from "./constants/images";
-import { ReactIcons } from "./constants/react_icons";
-import { Button } from "./Button";
+import { images } from "../constants/images";
+import { ReactIcons } from "../constants/react_icons";
+
 import { useLocation, useNavigate } from "react-router-dom";
-import { logout as logoutApi } from "../service/authentication";
-import { logout } from "../store/authSlice";
+import { logout as logoutApi } from "../../service/authentication";
+import { logout } from "../../store/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { FullScreenLoader } from "./Loading";
@@ -104,7 +104,7 @@ export const Leftbar = () => {
             <ul>
               {routesToUse?.map((item, index) => (
                 <li key={index}>
-                  <Button
+                  <button
                     onClick={() => navigate(item.path)}
                     className={`w-full flex items-center gap-3 ${
                       collapse ? "px-1 justify-center" : "pl-6"
@@ -119,7 +119,7 @@ export const Leftbar = () => {
                       {item.icon}
                     </span>
                     {!collapse && item.header}
-                  </Button>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -138,14 +138,14 @@ export const Leftbar = () => {
             {!collapse && "Logout"}
           </button>
           <div className="flex justify-end pr-2 ">
-            <Button
+            <button
               onClick={() => setCollapse(!collapse)}
               className="text-black bg-gray-100 p-2.5 rounded-md flex justify-center items-center"
             >
               <ReactIcons.IoIosArrowBack
                 className={collapse ? "rotate-180 transition" : ""}
               />
-            </Button>
+            </button>
           </div>
         </div>
         {/* </div> */}

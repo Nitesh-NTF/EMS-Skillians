@@ -8,8 +8,7 @@ import {
 } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { Img } from "../Img";
-import { ButtonLoader } from "../Loading";
+import { ButtonLoader } from "../common/Loading";
 import { images } from "../constants/images";
 import { ReactIcons } from "../constants/react_icons";
 import {
@@ -253,12 +252,12 @@ export const Login = () => {
             </p>
           </div>
           <div className="w-full h-full absolute overflow-hidden">
-            <Img
+            <img
               className="absolute top-20 -left-38 scale-125 z-10"
               src={images.gradient1}
             />
           </div>
-          <Img
+          <img
             className="absolute bottom-0 -right-22 z-30"
             src={images.young_woman_working_laptop}
             alt="Login banner"

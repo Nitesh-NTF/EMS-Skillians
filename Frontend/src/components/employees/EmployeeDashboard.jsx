@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
-import { BackButton } from "../BackButton";
-import { Card } from "../Card";
-import { FullScreenLoader } from "../Loading";
+import { BackButton } from "../common/BackButton";
+import { Card } from "../common/Card";
+import { FullScreenLoader } from "../common/Loading";
 import { WorkTImeEntries } from "../time_entries/WorkTImeEntries";
 import { fetchTimeEntries, addTimeEntry } from "../../service/timeEntries";
 import { fetchProjects } from "../../service/project";
 import { getTime } from "../../utils/helpingFns";
+import { useCallback } from "react";
 
 export const EmployeeDashboard = () => {
   const [loading, setLoading] = useState(true);

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ReactIcons } from "./constants/react_icons";
+import { ReactIcons } from "../constants/react_icons";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 
 export const MultiTabs = ({

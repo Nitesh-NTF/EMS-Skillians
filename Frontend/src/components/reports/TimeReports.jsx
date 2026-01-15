@@ -1,8 +1,8 @@
 import React from "react";
-import { BackButton } from "../BackButton";
+import { BackButton } from "../common/BackButton";
 import { ReactIcons } from "../constants/react_icons";
-import { Card } from "../Card";
-import { MultiTabs } from "../MultiTabs";
+import { Card } from "../common/Card";
+import { MultiTabs } from "../common/MultiTabs";
 import { BarChart } from "@mui/x-charts/BarChart";
 
 const cardsData = [

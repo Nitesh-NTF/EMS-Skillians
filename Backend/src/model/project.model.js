@@ -27,7 +27,7 @@ const projectSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ["Pending", "Active", "Inactive", "Complete"],
+        enum: ["Pending", "Start", "In Progress", "Blocked", "Complete"],
         default: "Active"
     },
     description: {

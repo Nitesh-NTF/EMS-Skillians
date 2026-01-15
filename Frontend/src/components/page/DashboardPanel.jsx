@@ -1,6 +1,6 @@
 import React from "react";
-import { Topbar } from "../Topbar";
-import { Leftbar } from "../Leftbar";
+import { Topbar } from "../common/Topbar";
+import { Leftbar } from "../common/Leftbar";
 import { Outlet } from "react-router-dom";
 
 export const DashboardPanel = () => {
