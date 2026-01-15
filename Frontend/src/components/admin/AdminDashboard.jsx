@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { Box, LinearProgress } from "@mui/material";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { PieChart } from "@mui/x-charts";
-import { Table } from "../Table";
-import { BackButton } from "../BackButton";
-import { Card } from "../Card";
-import { AvatarGroup } from "../AvatarGroup";
-import { FilterBox } from "../FilterBox";
+import { Table } from "../common/Table";
+import { BackButton } from "../common/BackButton";
+import { Card } from "../common/Card";
+import { AvatarGroup } from "../common/AvatarGroup";
+import { FilterBox } from "../common/FilterBox";
 import { ReactIcons } from "../constants/react_icons";
 import { images } from "../constants/images";
 import {

@@ -1,5 +1,5 @@
 import React from "react";
-import { ReactIcons } from "./constants/react_icons";
+import { ReactIcons } from "../constants/react_icons";
 
 export const SearchBar = ({ placeholder = "", value, onChange = () => {} }) => {
   return (

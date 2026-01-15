@@ -36,6 +36,14 @@ export const createEmployeeValidator = [
     .withMessage("Each role must be a string"),
 ];
 
+export const toggleEmployeeStatusValidator = [
+  body("status")
+    .notEmpty()
+    .withMessage("Status is required")
+    .isIn(["Active", "Inactive"])
+    .withMessage("Status must be Active or Inactive"),
+];
+
 export const updateEmployeeValidator = [
   body("name").optional().trim().notEmpty(),
 

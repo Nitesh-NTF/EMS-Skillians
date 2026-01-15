@@ -2,14 +2,14 @@ import { useCallback, useMemo, useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
-import { BackButton } from "../BackButton";
-import { Button } from "../Button";
-import { Table } from "../Table";
-import { AvatarGroup } from "../AvatarGroup";
-import { Pagination } from "../Pagination";
-import { SearchBar } from "../SearchBar";
+import { BackButton } from "../common/BackButton";
+import { Table } from "../common/Table";
+import { AvatarGroup } from "../common/AvatarGroup";
+import { Pagination } from "../common/Pagination";
+import { SearchBar } from "../common/SearchBar";
 import { ReactIcons } from "../constants/react_icons";
 import { deleteProject, fetchProjects } from "../../service/project";
+import { StatusBadge } from "../common/StatusBadge";
 
 export const ManageProjects = ({
   search = false,
@@ -99,7 +99,7 @@ export const ManageProjects = ({
         {status && (
           <select className="input" name="status" onChange={handleSearch}>
             <option value="">All Status</option>
-            {["Pending", "Active", "Inactive", "Complete"].map(
+            {["Start", "Pending", "In Progress", "Complete", "Blocked"].map(
               (dept, index) => (
                 <option key={index} value={dept}>
                   {dept}
@@ -111,13 +111,13 @@ export const ManageProjects = ({
 
         {/* Add btn */}
         {addBtn && (
-          <Button
+          <button
             onClick={() => navigate("/projects/add")}
             className="flex text-white bg-amber-600 p-2.5 rounded-sm px-10 cursor-pointer text-center items-center justify-center gap-1 min-w-max"
           >
             <ReactIcons.IoAdd />
             Add Project
-          </Button>
+          </button>
         )}
       </div>
       <Table
@@ -176,17 +176,7 @@ export const ManageProjects = ({
           {
             key: "status",
             header: "Status",
-            render: (row) => (
-              <span
-                className={`px-3 py-1 text-xs ${
-                  row.status == "Active"
-                    ? "text-green-800 bg-[#C6F6D5]"
-                    : "text-red-800"
-                }  rounded-2xl mr-2 w-fit`}
-              >
-                {row.status}
-              </span>
-            ),
+            render: (row) => <StatusBadge status={row.status} />,
           },
           {
             key: "duration",
@@ -202,7 +192,7 @@ export const ManageProjects = ({
                   header: "Actions",
                   render: (row, index) => (
                     <>
-                      <Button
+                      <button
                         onClick={(e) => {
                           e.stopPropagation();
                           navigate(`/projects/${row._id}/edit`);
@@ -210,7 +200,7 @@ export const ManageProjects = ({
                         className="px-3 py-1 text-green-800 bg-slate-300 rounded-md mr-2"
                       >
                         Edit
-                      </Button>
+                      </button>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();

@@ -10,6 +10,9 @@ export const login = asyncHandler(async (req, res) => {
 
     const user = await Employee.findOne({ email })
     if (!user) throw new ApiError(404, "User doesn't exists.")
+
+    if (user.status === "Inactive") throw new ApiError(403, "Your account is inactive. Please contact administrator.")
+
     const isPasswordCorrect = await bcrypt.compare(password, user.password)
     if (!isPasswordCorrect) throw new ApiError(400, "Incorrect password")
 

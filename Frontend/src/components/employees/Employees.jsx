@@ -2,13 +2,13 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
-import { BackButton } from "../BackButton";
-import { Button } from "../Button";
-import { Table } from "../Table";
-import { Pagination } from "../Pagination";
-import { SearchBar } from "../SearchBar";
+import { BackButton } from "../common/BackButton";
+import { Table } from "../common/Table";
+import { Pagination } from "../common/Pagination";
+import { SearchBar } from "../common/SearchBar";
 import { ReactIcons } from "../constants/react_icons";
 import { deleteEmployee, fetchEmployees } from "../../service/employee";
+import { StatusBadge } from "../common/StatusBadge";
 
 export const ManageEmployee = ({
   search = false,
@@ -109,13 +109,13 @@ export const ManageEmployee = ({
 
         {/* Add btn */}
         {addBtn && (
-          <Button
+          <button
             onClick={() => navigate("/employees/add")}
             className="flex text-white bg-amber-600 p-2.5 rounded-sm px-10 cursor-pointer text-center items-center justify-center gap-1 min-w-max"
           >
             <ReactIcons.IoAdd />
             Add Employee
-          </Button>
+          </button>
         )}
       </div>
 
@@ -154,17 +154,7 @@ export const ManageEmployee = ({
           {
             key: "status",
             header: "Status",
-            render: (row) => (
-              <span
-                className={`px-3 py-1 ${
-                  row.status == "Active"
-                    ? "text-green-800 bg-[#C6F6D5]"
-                    : "text-red-800"
-                }  rounded-2xl mr-2 w-fit`}
-              >
-                {row.status}
-              </span>
-            ),
+            render: (row) => <StatusBadge status={row.status} />,
           },
           ...(loggedUser.role.includes("Admin") && actions
             ? [
@@ -174,7 +164,7 @@ export const ManageEmployee = ({
                   render: (row) => (
                     <>
                       {" "}
-                      <Button
+                      <button
                         onClick={(e) => {
                           e.stopPropagation();
                           navigate(`/employees/${row._id}/edit`);
@@ -182,7 +172,7 @@ export const ManageEmployee = ({
                         className="px-3 py-1 text-green-800 bg-slate-300 rounded-md mr-2"
                       >
                         Edit
-                      </Button>
+                      </button>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();

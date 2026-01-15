@@ -45,4 +45,8 @@ export const fetchEmployees = async (query = {}) => {
         }
     })
     return API.get(`/api/employee?${urlParams.toString()}`).then(res => res.data)
+}
+
+export const toggleEmployeeStatus = async (id, status) => {
+    return API.post(`/api/employee/toggle-status?id=${id}`, { status }).then(res => res.data)
 } 

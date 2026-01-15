@@ -44,3 +44,7 @@ export const fetchProjects = async (query = {}) => {
     })
     return API.get(`/api/project?${urlParams.toString()}`).then(res => res.data)
 }
+
+export const toggleProjectStatus = async (id, status) => {
+    return API.post(`/api/project/toggle-status?id=${id}`, { status }).then(res => res.data)
+}

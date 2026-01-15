@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { BackButton } from "../BackButton";
-import { RequiredSign } from "../RequiredSign";
-import { FullScreenLoader } from "../Loading";
+import { BackButton } from "../common/BackButton";
+import { RequiredSign } from "../common/RequiredSign";
+import { FullScreenLoader } from "../common/Loading";
 import { images } from "../constants/images";
 import {
   addEmployee,
@@ -209,14 +209,14 @@ export const AddEmployee = () => {
           <label className="text-[#666666] flex my-1 items-center gap-1.5">
             <input
               type="radio"
-              value="Blocked"
+              value="Active"
               {...register("status", { required: "Status is required" })}
             />
-            Blocked
+            Active
           </label>
           <label className="text-[#666666] flex my-1 items-center gap-1.5">
-            <input type="radio" value="Active" {...register("status")} />
-            Active
+            <input type="radio" value="Inactive" {...register("status")} />
+            Inactive
           </label>
           {errors.status && (
             <p className="text-orange-500 text-[10px]">

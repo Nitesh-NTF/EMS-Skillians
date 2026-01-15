@@ -135,3 +135,11 @@ export const updateProjectValidator = [
         .isMongoId()
         .withMessage("Each employee must be a valid ObjectId"),
 ];
+
+export const toggleProjectStatusValidator = [
+    body("status")
+        .notEmpty()
+        .withMessage("Status is required")
+        .isIn(["Pending", "Start", "In Progress", "Blocked", "Complete"])
+        .withMessage("Status must be one of: Pending, Start, In Progress, Blocked, Complete"),
+];
