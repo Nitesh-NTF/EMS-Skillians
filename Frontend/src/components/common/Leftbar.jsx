@@ -14,6 +14,10 @@ const adminRoutes = [
     header: "Dashboard",
     path: "/dashboard",
     icon: <ReactIcons.LiaHomeSolid />,
+  },{
+    header: "Inbox",
+    path: "/inbox",
+    icon: <ReactIcons.LiaHomeSolid />,
   },
   {
     header: "Employee",

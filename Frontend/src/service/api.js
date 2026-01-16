@@ -1,10 +1,10 @@
 import axios from "axios"
-import { store } from "../store";
+import { store } from "../store/store";
 import { logout } from "../store/authSlice";
 
 export const API = axios.create({
-    baseURL: import.meta.env.VITE_BACKEND_URL,
-    withCredentials: true
+  baseURL: import.meta.env.VITE_BACKEND_URL,
+  withCredentials: true
 })
 
 API.interceptors.response.use(
@@ -14,7 +14,7 @@ API.interceptors.response.use(
     const originalRequest = error.config;
 
     // Prevent infinite loop
-    if (status === 401 ) {
+    if (status === 401) {
       originalRequest._retry = true;
 
       // Logout user

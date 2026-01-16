@@ -5,6 +5,7 @@ import { asyncHandler } from "../utils/asyncHandler.js"
 import { isValidObjectId } from "mongoose"
 import { images } from "../constants/images.js"
 import { uploadImage, deleteImage } from "../utils/cloudinary.js"
+import { createProjectNotification } from "../utils/notificationService.js"
 
 export const addProject = asyncHandler(async (req, res) => {
     const { name, category, client, estimatedHours, status, description, startDate, endDate, employees } = req.body
@@ -69,20 +70,35 @@ export const updateProject = asyncHandler(async (req, res) => {
     // Update employees' projects
     const oldEmployees = project.employees.map(emp => emp.toString());
     const newEmployees = req.body.employees || [];
-    console.log('oldEmployees', oldEmployees)
-    console.log('newEmployees', newEmployees)
+    // console.log('oldEmployees', oldEmployees)
+    // console.log('newEmployees', newEmployees)
     const toAdd = newEmployees.filter(emp => !oldEmployees.includes(emp));
     const toRemove = oldEmployees.filter(emp => !newEmployees.includes(emp));
 
-    console.log('toAdd', toAdd)
-    console.log('toRemove', toRemove)
+    // console.log('toAdd', toAdd)
+    // console.log('toRemove', toRemove)
 
     if (toAdd.length > 0) {
         const res = await Employee.updateMany(
             { _id: { $in: toAdd } },
             { $addToSet: { projects: id } }
         );
-        console.log('update emp project res: ', res)
+        // console.log('update emp project res: ', res)
+
+        // 🔔 Trigger notification (non-blocking)
+        try {
+            await createProjectNotification({
+                type: "PROJECT_EMPLOYEE_ADDED",
+                projectId: id,
+                projectName: updatedProject.name,
+                affectedEmployeeIds: toAdd,
+                triggeredBy: req.user._id,
+                io: req.io
+            });
+        } catch (error) {
+            console.error("Notification error:", error.message);
+            // Don't break the API response
+        }
     }
 
     if (toRemove.length > 0) {
@@ -90,7 +106,22 @@ export const updateProject = asyncHandler(async (req, res) => {
             { _id: { $in: toRemove } },
             { $pull: { projects: id } }
         );
-        console.log('remove emp project res: ', res)
+        // console.log('remove emp project res: ', res)
+
+        // 🔔 Trigger notification (non-blocking)
+        try {
+            await createProjectNotification({
+                type: "PROJECT_EMPLOYEE_REMOVED",
+                projectId: id,
+                projectName: updatedProject.name,
+                affectedEmployeeIds: toRemove,
+                triggeredBy: req.user._id,
+                io: req.io
+            });
+        } catch (error) {
+            console.error("Notification error:", error.message);
+            // Don't break the API response
+        }
     }
 
     successResponse(res, 200, "Project updated successfully", updatedProject)

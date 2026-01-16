@@ -27,6 +27,7 @@ import { AddProject } from "../components/projects/AddProject";
 import { EmployeeDashboard } from "../components/employees/EmployeeDashboard";
 import { ProjectDetails } from "../components/projects/ProjectDetails";
 import { WorkTImeEntries } from "../components/time_entries/WorkTImeEntries";
+import { Inbox } from "../components/notifications/Inbox";
 
 // Admin routes
 const adminRoutes = [
@@ -35,6 +36,7 @@ const adminRoutes = [
     element: <DashboardPanel />,
     children: [
       { index: true, element: <Navigate to="dashboard" replace /> },
+      {path: "inbox", element: <Inbox/>},
       { path: "dashboard", element: <AdminDashboard /> },
       {
         path: "employees",
