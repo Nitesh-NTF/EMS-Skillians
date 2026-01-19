@@ -4,10 +4,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { markAsRead, getUserNotifications, getUnreadCount } from "../utils/notificationService.js";
 import { isValidObjectId } from "mongoose";
 
-/**
- * Get all notifications for logged-in user (admin)
- * Pagination supported
-*/
+
 export const fetchNotifications = asyncHandler(async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
     const userId = req.user._id;
@@ -24,9 +21,6 @@ export const fetchNotifications = asyncHandler(async (req, res) => {
     });
 });
 
-/**
- * Get unread notification count
- */
 export const getUnreadNotificationCount = asyncHandler(async (req, res) => {
     const userId = req.user._id;
 
@@ -34,9 +28,6 @@ export const getUnreadNotificationCount = asyncHandler(async (req, res) => {
     successResponse(res, 200, "Unread count fetched", { unreadCount: count });
 });
 
-/**
- * Get single notification by ID
- */
 export const getNotificationById = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const userId = req.user._id;
@@ -60,9 +51,6 @@ export const getNotificationById = asyncHandler(async (req, res) => {
     successResponse(res, 200, "Notification fetched", notification);
 });
 
-/**
- * Mark notification as read
- */
 export const markNotificationAsRead = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const userId = req.user._id;
@@ -86,9 +74,6 @@ export const markNotificationAsRead = asyncHandler(async (req, res) => {
     successResponse(res, 200, "Notification marked as read", updated);
 });
 
-/**
- * Mark all notifications as read
- */
 export const markAllAsRead = asyncHandler(async (req, res) => {
     const userId = req.user._id;
 
@@ -106,9 +91,6 @@ export const markAllAsRead = asyncHandler(async (req, res) => {
     successResponse(res, 200, "All notifications marked as read");
 });
 
-/**
- * Delete a notification
- */
 export const deleteNotification = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const userId = req.user._id;
@@ -129,9 +111,6 @@ export const deleteNotification = asyncHandler(async (req, res) => {
     successResponse(res, 200, "Notification deleted successfully");
 });
 
-/**
- * Delete all notifications for user
- */
 export const deleteAllNotifications = asyncHandler(async (req, res) => {
     const userId = req.user._id;
 

@@ -8,7 +8,7 @@ import { AvatarGroup } from "../common/AvatarGroup";
 import { Pagination } from "../common/Pagination";
 import { SearchBar } from "../common/SearchBar";
 import { ReactIcons } from "../constants/react_icons";
-import { deleteProject, fetchProjects } from "../../service/project";
+import { deleteProject, fetchProjects } from "../../service/apis/project";
 import { StatusBadge } from "../common/StatusBadge";
 
 export const ManageProjects = ({
@@ -59,7 +59,7 @@ export const ManageProjects = ({
         ...(pagination && { page, limit }),
         ...(empId && { employees: [empId] }),
       });
-      console.log("res.data", res.data);
+      // console.log("res.data", res.data);
       setProjects(res.data.projects);
       setTotal(res.data.pagination.total);
     } catch (error) {
@@ -104,7 +104,7 @@ export const ManageProjects = ({
                 <option key={index} value={dept}>
                   {dept}
                 </option>
-              )
+              ),
             )}
           </select>
         )}
@@ -131,7 +131,7 @@ export const ManageProjects = ({
           tr: "bg-white border-b-2 border-gray-300",
           td: "px-2 py-3",
         }}
-        coloums={[
+        columns={[
           {
             key: "name",
             header: "Project Name",

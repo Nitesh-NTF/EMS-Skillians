@@ -5,8 +5,8 @@ import { BackButton } from "../common/BackButton";
 import { Card } from "../common/Card";
 import { FullScreenLoader } from "../common/Loading";
 import { WorkTImeEntries } from "../time_entries/WorkTImeEntries";
-import { fetchTimeEntries, addTimeEntry } from "../../service/timeEntries";
-import { fetchProjects } from "../../service/project";
+import {  addTimeEntry } from "../../service/apis/timeEntries";
+import { fetchProjects } from "../../service/apis/project";
 import { getTime } from "../../utils/helpingFns";
 import { useCallback } from "react";
 

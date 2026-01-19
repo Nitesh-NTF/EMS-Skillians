@@ -17,6 +17,7 @@ import { CgLoadbarSound } from "react-icons/cg";
 import { MdEmail } from "react-icons/md";
 import { FaLock } from "react-icons/fa";
 import { RiCheckDoubleFill } from "react-icons/ri";
+import { FaInbox } from "react-icons/fa";
 
 export const ReactIcons = {
     LiaHomeSolid,
@@ -37,5 +38,6 @@ export const ReactIcons = {
     CgLoadbarSound,
     MdEmail,
     FaLock,
-    RiCheckDoubleFill
+    RiCheckDoubleFill,
+    FaInbox
 };

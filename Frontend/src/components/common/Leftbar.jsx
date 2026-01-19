@@ -3,7 +3,7 @@ import { images } from "../constants/images";
 import { ReactIcons } from "../constants/react_icons";
 
 import { useLocation, useNavigate } from "react-router-dom";
-import { logout as logoutApi } from "../../service/authentication";
+import { logout as logoutApi } from "../../service/apis/authentication";
 import { logout } from "../../store/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
@@ -14,10 +14,11 @@ const adminRoutes = [
     header: "Dashboard",
     path: "/dashboard",
     icon: <ReactIcons.LiaHomeSolid />,
-  },{
+  },
+  {
     header: "Inbox",
     path: "/inbox",
-    icon: <ReactIcons.LiaHomeSolid />,
+    icon: <ReactIcons.FaInbox />,
   },
   {
     header: "Employee",
@@ -47,6 +48,11 @@ const employeeRoutes = [
     header: "Dashboard",
     path: "/dashboard",
     icon: <ReactIcons.LiaHomeSolid />,
+  },
+  {
+    header: "Inbox",
+    path: "/inbox",
+    icon: <ReactIcons.FaInbox />,
   },
   {
     header: "Project",

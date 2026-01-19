@@ -2,25 +2,18 @@ import React from "react";
 import {
   createBrowserRouter,
   Navigate,
-  Outlet,
   Route,
   Routes,
-  BrowserRouter as Routing,
-  useNavigate,
 } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Login } from "../components/auth/Login";
-import { Home } from "../components/page/Home";
 import { Employees, ManageEmployee } from "../components/employees/Employees";
 import { DashboardPanel } from "../components/page/DashboardPanel";
 import { EmployeeDetail } from "../components/employees/EmployeeDetail";
 import { AddEmployee } from "../components/employees/AddEmployee";
 import { PersonalDetails } from "../components/admin/PersonalDetails";
 import { AdminDashboard } from "../components/admin/AdminDashboard";
-// import { TimeEntries } from "../components/admin/time_entries/TimeEntries";
 import { MyProjects } from "../components/projects/MyProjects";
-import { TimeReports } from "../components/reports/TimeReports";
 import { Settings } from "../components/admin/Settings";
 import { ManageProjects, Projects } from "../components/projects/Projects";
 import { AddProject } from "../components/projects/AddProject";
@@ -36,7 +29,7 @@ const adminRoutes = [
     element: <DashboardPanel />,
     children: [
       { index: true, element: <Navigate to="dashboard" replace /> },
-      {path: "inbox", element: <Inbox/>},
+      { path: "inbox", element: <Inbox /> },
       { path: "dashboard", element: <AdminDashboard /> },
       {
         path: "employees",
@@ -101,6 +94,7 @@ const employeeRoutes = [
     children: [
       { index: true, element: <Navigate to="dashboard" replace /> },
       { path: "dashboard", element: <EmployeeDashboard /> },
+      { path: "inbox", element: <Inbox /> },
       { path: "my-projects", element: <MyProjects /> },
       // { path: "time", element: <TimeEntries /> },
       // { path: "personalDetail", element: <PersonalDetails /> },

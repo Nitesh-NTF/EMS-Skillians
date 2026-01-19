@@ -2,13 +2,10 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { Card } from "../common/Card";
 import { Table } from "../common/Table";
-import { FullScreenLoader } from "../common/Loading";
 import { Pagination } from "../common/Pagination";
 import { ReactIcons } from "../constants/react_icons";
-import { fetchProjects } from "../../service/project";
-import { fetchTimeEntries, addTimeEntry } from "../../service/timeEntries";
+import { fetchTimeEntries } from "../../service/apis/timeEntries";
 import { getTime, getToday } from "../../utils/helpingFns";
 
 export const WorkTImeEntries = ({ isLoggedUser = false }) => {
@@ -81,7 +78,7 @@ export const WorkTImeEntries = ({ isLoggedUser = false }) => {
           th: "px-4 py-2 text-center text-[#215675] border-b border-gray-300",
           td: "px-4 py-3",
         }}
-        coloums={[
+        columns={[
           {
             key: "date",
             header: "DATE",

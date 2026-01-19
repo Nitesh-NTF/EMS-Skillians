@@ -5,7 +5,8 @@ import { asyncHandler } from "../utils/asyncHandler.js"
 import { isValidObjectId } from "mongoose"
 import { images } from "../constants/images.js"
 import { uploadImage, deleteImage } from "../utils/cloudinary.js"
-import { createProjectNotification } from "../utils/notificationService.js"
+import { updateEmployeeInproject } from "../utils/notificationService.js"
+import { TimeEntry } from "../model/timeEntries.model.js"
 
 export const addProject = asyncHandler(async (req, res) => {
     const { name, category, client, estimatedHours, status, description, startDate, endDate, employees } = req.body
@@ -29,6 +30,22 @@ export const addProject = asyncHandler(async (req, res) => {
             { _id: { $in: req.body.employees } },
             { $addToSet: { projects: project._id } }
         );
+
+        console.log('req.body.employees', req.body.employees)
+        // 🔔 Trigger notification (non-blocking)
+        try {
+            await updateEmployeeInproject({
+                type: "PROJECT_EMPLOYEE_ADDED",
+                projectId: project._id,
+                projectName: project.name,
+                recipients: req.body.employees,
+                triggeredBy: req.user._id,
+                io: req.io
+            });
+        } catch (error) {
+            console.error("Notification error:", error.message);
+            // Don't break the API response
+        }
     }
 
     successResponse(res, 201, "Project created successfully.", project)
@@ -75,8 +92,9 @@ export const updateProject = asyncHandler(async (req, res) => {
     const toAdd = newEmployees.filter(emp => !oldEmployees.includes(emp));
     const toRemove = oldEmployees.filter(emp => !newEmployees.includes(emp));
 
-    // console.log('toAdd', toAdd)
-    // console.log('toRemove', toRemove)
+    console.log('toAdd', toAdd)
+    console.log('toRemove', toRemove)
+    console.log('req.io', req.io)
 
     if (toAdd.length > 0) {
         const res = await Employee.updateMany(
@@ -84,14 +102,13 @@ export const updateProject = asyncHandler(async (req, res) => {
             { $addToSet: { projects: id } }
         );
         // console.log('update emp project res: ', res)
-
         // 🔔 Trigger notification (non-blocking)
         try {
-            await createProjectNotification({
+            await updateEmployeeInproject({
                 type: "PROJECT_EMPLOYEE_ADDED",
                 projectId: id,
                 projectName: updatedProject.name,
-                affectedEmployeeIds: toAdd,
+                recipients: toAdd,
                 triggeredBy: req.user._id,
                 io: req.io
             });
@@ -110,11 +127,11 @@ export const updateProject = asyncHandler(async (req, res) => {
 
         // 🔔 Trigger notification (non-blocking)
         try {
-            await createProjectNotification({
+            await updateEmployeeInproject({
                 type: "PROJECT_EMPLOYEE_REMOVED",
                 projectId: id,
                 projectName: updatedProject.name,
-                affectedEmployeeIds: toRemove,
+                recipients: toRemove,
                 triggeredBy: req.user._id,
                 io: req.io
             });
@@ -139,16 +156,23 @@ export const deleteProject = asyncHandler(async (req, res) => {
     const { id } = req.params
     if (!isValidObjectId(id)) throw new ApiError(400, "Pass valid project Id")
 
-    const project = await Project.findByIdAndDelete(id)
+    const project = await Project.findById(id)
+    if (!project) {
+        throw new ApiError(404, "Project not found")
+    }
+
+    await Promise.all([
+        Employee.updateMany(
+            { projects: id },
+            { $pull: { projects: id } }
+        ),
+        TimeEntry.deleteMany({ project: id }),
+        Project.findByIdAndDelete(id)
+    ])
+
     if (project.icon !== images.projectDefaultIcon) {
         await deleteImage(project.icon);
     }
-
-    // Remove project from employees' projects array
-    await Employee.updateMany(
-        { projects: id },
-        { $pull: { projects: id } }
-    );
 
     successResponse(res, 200, "Project delete successfully")
 })

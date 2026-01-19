@@ -28,11 +28,6 @@ export const setupSocketHandlers = (io) => {
             console.error(`⚠️ Socket error for ${userId}:`, error);
         });
 
-        // Optional: Handle client-side events
-        socket.on("notification:read", (notificationId) => {
-            console.log(`📖 User ${userId} marked notification ${notificationId} as read`);
-            // Handled via API route for persistence
-        });
     });
 
     console.log("\n🌐 Socket.IO handlers initialized");

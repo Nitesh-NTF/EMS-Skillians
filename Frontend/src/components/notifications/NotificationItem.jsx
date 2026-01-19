@@ -6,7 +6,7 @@ import { markAsRead, removeNotification } from "../../store/notificationSlice";
 import {
   markNotificationAsRead,
   deleteNotification,
-} from "../../service/notification";
+} from "../../service/apis/notification";
 import { ReactIcons } from "../constants/react_icons";
 
 /**
@@ -110,7 +110,7 @@ const NotificationItem = ({ notification }) => {
               className="p-1 hover:bg-gray-200 rounded transition-colors"
               title="Mark as read"
             >
-                <ReactIcons.RiCheckDoubleFill className="text-blue-500" />
+              <ReactIcons.RiCheckDoubleFill className="text-blue-500" />
             </button>
           )}
           <button

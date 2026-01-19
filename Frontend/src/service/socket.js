@@ -1,13 +1,10 @@
 import { io } from "socket.io-client";
 import { store } from "../store/store";
 import { addNotification, setUnreadCount } from "../store/notificationSlice";
+import toast from "react-hot-toast";
 
 let socket = null;
 
-/**
- * Initialize Socket.IO connection with JWT authentication
- * Called once when user logs in
- */
 export const initializeSocket = (token) => {
     // Prevent multiple connections
     if (socket?.connected) {
@@ -15,8 +12,8 @@ export const initializeSocket = (token) => {
         return socket;
     }
 
-    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
-
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000"; 
+    
     socket = io(BACKEND_URL, {
         auth: {
             token: token
@@ -35,6 +32,7 @@ export const initializeSocket = (token) => {
     // Receive new notification
     socket.on("notification:new", (notification) => {
         console.log("🔔 New notification received:", notification);
+        toast("🔔 New notification received.")
         store.dispatch(addNotification(notification));
     });
 

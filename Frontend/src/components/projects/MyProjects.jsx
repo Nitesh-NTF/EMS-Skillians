@@ -7,7 +7,7 @@ import { BackButton } from "../common/BackButton";
 import { AvatarGroup } from "../common/AvatarGroup";
 import { Loader } from "../common/Loading";
 import { ReactIcons } from "../constants/react_icons";
-import { fetchProjects } from "../../service/project";
+import { fetchProjects } from "../../service/apis/project";
 import { getColorOnPercentage } from "../../utils/helpingFns";
 
 export const MyProjects = () => {

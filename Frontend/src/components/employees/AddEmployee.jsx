@@ -10,7 +10,7 @@ import {
   addEmployee,
   getEmployee,
   updateEmployee,
-} from "../../service/employee";
+} from "../../service/apis/employee";
 
 const initialState = {
   name: "",

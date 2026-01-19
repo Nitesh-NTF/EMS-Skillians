@@ -1,25 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, Outlet } from "react-router-dom";
-import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { MultiTabs } from "../common/MultiTabs";
 import { BackButton } from "../common/BackButton";
-import { Table } from "../common/Table";
-import { AvatarGroup } from "../common/AvatarGroup";
-import {
-  FullScreenLoader,
-  PulseLoader,
-  SkeletonLoader,
-} from "../common/Loading";
+import { SkeletonLoader } from "../common/Loading";
 import { StatusModal } from "../common/StatusModal";
 import { StatusBadge } from "../common/StatusBadge";
-import { WorkTImeEntries } from "../time_entries/WorkTImeEntries";
-import { ManageProjects } from "../projects/Projects";
-import { ReactIcons } from "../constants/react_icons";
-import { images } from "../constants/images";
-import { getEmployee, toggleEmployeeStatus } from "../../service/employee";
-import { fetchTimeEntries } from "../../service/timeEntries";
-import { fetchProjects } from "../../service/project";
+import { getEmployee, toggleEmployeeStatus } from "../../service/apis/employee";
+import { fetchProjects } from "../../service/apis/project";
 import { getToday } from "../../utils/helpingFns";
 import { useCallback } from "react";
 

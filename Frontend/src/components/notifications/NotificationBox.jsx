@@ -11,15 +11,12 @@ import {
 import {
   fetchNotifications,
   markAllNotificationsAsRead,
-} from "../../service/notification";
+} from "../../service/apis/notification";
 import NotificationItem from "./NotificationItem";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Pagination } from "../common/Pagination";
+import { Loader } from "../common/Loading";
 
-/**
- * Notification Box Component
- * Displays list of notifications with pagination and actions
- */
 const NotificationBox = ({
   onClose,
   header = false,
@@ -27,24 +24,26 @@ const NotificationBox = ({
   pagination = false,
 }) => {
   const dispatch = useDispatch();
-  const { notifications, isLoading, unreadCount } = useSelector(
-    (state) => state.notifications
+  const { notifications, unreadCount } = useSelector(
+    (state) => state.notifications,
   );
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  // Fetch notifications on mount or page change
-  useEffect(() => {
-    dispatch(setLoading(true));
-    fetchNotifications(page, 6)
-      .then((data) => {
-        dispatch(setNotifications(data.notifications));
-        setTotalPages(data.pagination.pages);
-      })
-      .catch((error) => {
-        dispatch(setError(error.message));
-      });
-  }, [page, dispatch]);
+  async function fetchNotificationsFn() {
+    try {
+      const res = await fetchNotifications(page, 5);
+      // console.log('res', res)
+      dispatch(setNotifications(res.notifications));
+      setTotal(res.pagination.total);
+    } catch (error) {
+      dispatch(setError(error.message));
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const handleMarkAllAsRead = async () => {
     try {
@@ -55,22 +54,12 @@ const NotificationBox = ({
     }
   };
 
-  const handlePrevPage = () => {
-    if (page > 1) setPage(page - 1);
-  };
-
-  const handleNextPage = () => {
-    if (page < totalPages) setPage(page + 1);
-  };
-
-   const handleBackdropClick = (e) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
+  useEffect(() => {
+    fetchNotificationsFn();
+  }, [page]);
 
   return (
-    <div className="flex flex-col h-full bg-white" >
+    <div className="flex flex-col h-full bg-white">
       {/* Header */}
       {header && (
         <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50">
@@ -87,7 +76,10 @@ const NotificationBox = ({
 
           <div className="flex items-center gap-2">
             {header && viewAllBtn && (
-              <button className="text-xs cursor-pointer rounded-sm bg-blue-600 text-white py-0.5 px-2">
+              <button
+                onClick={() => navigate("/inbox")}
+                className="text-xs cursor-pointer rounded-sm bg-blue-600 text-white py-0.5 px-2"
+              >
                 View All
               </button>
             )}
@@ -111,10 +103,8 @@ const NotificationBox = ({
       )}
       {/* Notifications List */}
       <div className="flex-1 overflow-y-auto">
-        {isLoading ? (
-          <div className="flex items-center justify-center h-32">
-            <p className="text-gray-500">Loading...</p>
-          </div>
+        {loading ? (
+          <Loader />
         ) : notifications.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-32 text-gray-500">
             <p>No notifications yet</p>
@@ -131,36 +121,9 @@ const NotificationBox = ({
         )}
       </div>
 
-      {/* Footer - Pagination */}
-      {/* {pagination && notifications.length > 0  && (
-        <div className="flex items-center justify-between p-4 border-t border-gray-200 bg-gray-50 text-sm">
-          <button
-            onClick={handlePrevPage}
-            disabled={page === 1}
-            className="px-3 py-1 rounded bg-gray-300 hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed text-gray-800"
-          >
-            Previous
-          </button>
-          <span className="text-gray-600">
-            Page {page} of {totalPages}
-          </span>
-          <button
-            onClick={handleNextPage}
-            disabled={page === totalPages}
-            className="px-3 py-1 rounded bg-gray-300 hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed text-gray-800"
-          >
-            Next
-          </button>
-        </div>
-      )} */}
-
+      {/* paginations */}
       {pagination && notifications.length > 0 && (
-        <Pagination
-          changePage={setPage}
-          page={page}
-          total={totalPages}
-          limit={6}
-        />
+        <Pagination changePage={setPage} page={page} total={total} limit={5} />
       )}
     </div>
   );

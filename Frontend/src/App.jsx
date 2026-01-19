@@ -4,7 +4,7 @@ import { store } from "./store/store.js";
 import { Toaster } from "react-hot-toast";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { initializeSocket, disconnectSocket } from "./service/socket";
-import { getUnreadCount } from "./service/notification";
+import { getUnreadCount } from "./service/apis/notification";
 import { setUnreadCount } from "./store/notificationSlice";
 
 import { router } from "./routing/Router";

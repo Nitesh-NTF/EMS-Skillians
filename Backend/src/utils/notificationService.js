@@ -6,27 +6,23 @@ import { ApiError } from "./cutomResponse.js";
  * Ensures aggregation (one notification per action, even with multiple employees)
  */
 
-export const createProjectNotification = async ({
+export const updateEmployeeInproject = async ({
     type,
     projectId,
     projectName,
-    affectedEmployeeIds,
+    recipients,
     triggeredBy,
     io,
-    adminId
 }) => {
     try {
         // Validate input
-        if (!type || !projectId || !affectedEmployeeIds || affectedEmployeeIds.length === 0) {
+        if (!type || !projectId || !recipients || recipients.length === 0) {
             throw new ApiError(400, "Invalid notification parameters");
         }
 
-        // Generate title and message based on type
-        const { title, message } = generateNotificationContent(
-            type,
-            projectName,
-            affectedEmployeeIds.length
-        );
+        const title = type === "PROJECT_EMPLOYEE_ADDED" ? `Employees Added to ${projectName}` : `Employees removed from ${projectName}`
+        const message = `${recipients.length > 1 ? `${recipients.length} Employees are ` : "You "} ${type === "PROJECT_EMPLOYEE_ADDED" ? "added to" : "removed from"
+            } ${projectName}`
 
         // Create single aggregated notification
         const notification = await Notification.create({
@@ -34,10 +30,8 @@ export const createProjectNotification = async ({
             title,
             message,
             projectId,
-            projectName,
-            affectedEmployeeIds,
+            recipients,
             triggeredBy: triggeredBy || adminId,
-            recipients: [triggeredBy || adminId], // Initially only admin
             isRead: false
         });
 
@@ -45,19 +39,26 @@ export const createProjectNotification = async ({
         const populatedNotification = await Notification.findById(notification._id)
             .populate("projectId", "name")
             .populate("triggeredBy", "name email")
+            .populate("recipients", "name email")
             .lean();
 
+        console.log('populatedNotification : ', populatedNotification)
+        console.log('io',io)
+        console.log('recipients', recipients)
         // Emit socket event to admin room
-        if (io) {
-            const adminUserId = triggeredBy || adminId;
-            const roomName = `user_${adminUserId}`;
-
-            io.to(roomName).emit("notification:new", {
-                ...populatedNotification,
-                _id: populatedNotification._id.toString() // Convert ObjectId to string
+        if (io && recipients.length > 0) {
+            console.log("if working")
+            recipients.forEach(recipient => {
+                const roomName = `user_${recipient}`;
+                console.log('roomName', roomName)
+                io.to(roomName).emit("notification:new", {
+                    ...populatedNotification,
+                    _id: populatedNotification._id.toString() // Convert ObjectId to string
+                });
+                console.log(`✅ Notification emitted to room: ${roomName}`);
             });
 
-            console.log(`✅ Notification emitted to room: ${roomName}`);
+
         }
 
         return notification;
@@ -70,18 +71,6 @@ export const createProjectNotification = async ({
     }
 };
 
-/**
- * Generate title and message based on notification type
- */
-const generateNotificationContent = (type, projectName, employeeCount) => {
-    const isAdded = type === "PROJECT_EMPLOYEE_ADDED";
-
-    return {
-        title: isAdded ? "Employees Added" : "Employees Removed",
-        message: `${employeeCount} employee${employeeCount > 1 ? "s" : ""} ${isAdded ? "added to" : "removed from"
-            } ${projectName}`
-    };
-};
 
 /**
  * Mark notification as read
@@ -116,7 +105,7 @@ export const getUserNotifications = async (userId, page = 1, limit = 10) => {
         })
             .populate("projectId", "name")
             .populate("triggeredBy", "name email")
-            .populate("affectedEmployeeIds", "name email")
+            .populate("recipients", "name email")
             .sort({ createdAt: -1 })
             .limit(limit)
             .skip(skip)

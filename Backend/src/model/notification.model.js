@@ -4,8 +4,6 @@ const notificationSchema = new Schema(
     {
         type: {
             type: String,
-            enum: ["PROJECT_EMPLOYEE_ADDED", "PROJECT_EMPLOYEE_REMOVED"],
-            required: [true, "Notification type is required"]
         },
         title: {
             type: String,
@@ -20,17 +18,7 @@ const notificationSchema = new Schema(
         projectId: {
             type: Schema.Types.ObjectId,
             ref: "Project",
-            required: [true, "Project ID is required"]
         },
-        projectName: {
-            type: String,
-            required: [true, "Project name is required"],
-            trim: true
-        },
-        affectedEmployeeIds: [{
-            type: Schema.Types.ObjectId,
-            ref: "Employee"
-        }],
         triggeredBy: {
             type: Schema.Types.ObjectId,
             ref: "Employee",

@@ -10,7 +10,7 @@ import {
 } from "../common/Loading";
 import { ReactIcons } from "../constants/react_icons";
 import { images } from "../constants/images";
-import { getProject, toggleProjectStatus } from "../../service/project";
+import { getProject, toggleProjectStatus } from "../../service/apis/project";
 import { StatusModal } from "../common/StatusModal";
 import { StatusBadge } from "../common/StatusBadge";
 

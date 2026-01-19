@@ -60,13 +60,14 @@ export const getTimeEntries = asyncHandler(async (req, res) => {
         .populate('employee', 'name email')
         .sort({ createdAt: -1 });
 
-    if (limitNum) {
+        
+        if (limitNum) {
         timeEntriesQuery = timeEntriesQuery.limit(limitNum);
         if (pageNum) timeEntriesQuery = timeEntriesQuery.skip((pageNum - 1) * limitNum);
     }
-
+    
     const timeEntries = await timeEntriesQuery;
-
+    
     const total = await TimeEntry.countDocuments(filter);
 
     const pagination = { total, page: pageNum || 1, limit: limitNum || total }

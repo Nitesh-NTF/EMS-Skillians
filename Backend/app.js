@@ -1,10 +1,14 @@
 import express from "express"
 import cors from "cors"
 import cookieParser from "cookie-parser"
+import {createServer} from "http"
+import { Server } from "socket.io";
+import { socketAuthMiddleware } from "./src/middleware/socketAuth.js";
+import { setupSocketHandlers } from "./src/utils/socket.js";
 import { errorHandler } from "./src/utils/cutomResponse.js"
 
 
-export const app = express()
+const app = express()
 
 const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173"
 
@@ -18,6 +22,27 @@ app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use("/uploads", express.static("uploads"));
+
+// Initialize Socket.IO
+export const server = createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: process.env.FRONTEND_URL || "http://localhost:5173",
+        credentials: true
+    }
+});
+// console.log('io', io)
+io.use(socketAuthMiddleware);
+
+// Setup socket event handlers
+setupSocketHandlers(io);
+
+// Make io accessible to routes/controllers via req.io
+app.use((req, res, next) => {
+    req.io = io;
+    next();
+});
+
 
 // Logging middleware for all requests
 app.use((req, res, next) => {

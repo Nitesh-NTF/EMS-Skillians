@@ -15,7 +15,7 @@ import {
   getTime,
   getToday,
 } from "../../utils/helpingFns";
-import { fetchProjects } from "../../service/project";
+import { fetchProjects } from "../../service/apis/project";
 
 const graphData = [
   2.5,
@@ -186,7 +186,7 @@ export const AdminDashboard = () => {
           >
             <Table
               loading={loading.projectTable}
-              coloums={ProjectCol}
+              columns={ProjectCol}
               data={projects}
               path="/projects"
               className={{
@@ -218,7 +218,7 @@ export const AdminDashboard = () => {
                   data: projects.map((p) => ({
                     value: p.duration,
                     color: getColorOnPercentage(
-                      getPercentage(p.duration, p.estimatedHours)
+                      getPercentage(p.duration, p.estimatedHours),
                     ),
                   })),
                 },
@@ -235,7 +235,7 @@ export const AdminDashboard = () => {
                 {parseFloat(
                   projects
                     .reduce((acc, item) => acc + item.duration, 0)
-                    .toFixed(2)
+                    .toFixed(2),
                 )}{" "}
                 hr
               </text>
@@ -259,7 +259,7 @@ export const AdminDashboard = () => {
                       backgroundColor: "#e5e7eb",
                       "& .MuiLinearProgress-bar": {
                         backgroundColor: `${getColorOnPercentage(
-                          getPercentage(item.duration, item.estimatedHours)
+                          getPercentage(item.duration, item.estimatedHours),
                         )}`,
                         transition: "transform 0.5s ease",
                       },

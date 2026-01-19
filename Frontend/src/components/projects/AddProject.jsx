@@ -7,8 +7,8 @@ import { BackButton } from "../common/BackButton";
 import { RequiredSign } from "../common/RequiredSign";
 import { FullScreenLoader } from "../common/Loading";
 import { images } from "../constants/images";
-import { addProject, updateProject, getProject } from "../../service/project";
-import { fetchEmployees } from "../../service/employee";
+import { addProject, updateProject, getProject } from "../../service/apis/project";
+import { fetchEmployees } from "../../service/apis/employee";
 
 const initialState = {
   name: "",
@@ -59,7 +59,7 @@ export const AddProject = () => {
       if (!projectId) {
         delete data._id;
         const res = await addProject(data);
-        console.log("res", res.data);
+        // console.log("res", res.data);
         toast.success(res.message);
         reset();
         navigate("/projects");
@@ -68,7 +68,7 @@ export const AddProject = () => {
           ...data,
           _id: projectId,
         });
-        console.log("res", res.data);
+        // console.log("res", res.data);
         toast.success(res.message);
         navigate(`/projects/${projectId}/workTimeEntries`);
       }

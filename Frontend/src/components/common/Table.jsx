@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Loader } from "./Loading";
 
 export const Table = ({
-  coloums = [],
+  columns = [],
   data = [],
   keyField = undefined,
   noDataMessage = "No Exists",
@@ -21,9 +21,6 @@ export const Table = ({
   const naviagte = useNavigate();
 
   function handleRowClick(row) {
-    console.log('row', row)
-    console.log('path', path)
-
     if (path) {
       if (path == `/employees` || path == `/projects`)
         naviagte(`${path}/${row._id}/workTimeEntries`);
@@ -36,7 +33,7 @@ export const Table = ({
     <table className={"table-auto w-full text-center " + className.table}>
       <thead className={className.thead}>
         <tr>
-          {coloums.map((col, index) => (
+          {columns.map((col, index) => (
             <th key={col.key || index} className={className.th}>
               {col.header}
             </th>
@@ -46,32 +43,36 @@ export const Table = ({
       <tbody className={" " + className.tbody}>
         {loading ? (
           <tr>
-            <td colSpan={coloums.length}>
+            <td colSpan={columns.length}>
               <Loader />
             </td>
           </tr>
         ) : (
           <>
             {data.length && !loading ? (
-              data.map((item, rowIndex) => (
-                <tr
-                  key={keyField ? item[keyField] : rowIndex}
-                  className={className.tr}
-                  onClick={() => handleRowClick(item)}
-                >
-                  {coloums.map((col, cellIndex) => (
-                    <td
-                      key={col.key || cellIndex}
-                      className={"truncate " + className.td}
-                    >
-                      {col.render ? col.render(item, rowIndex) : item[col.key]}
-                    </td>
-                  ))}
-                </tr>
-              ))
+              data.map((item, rowIndex) => {
+                return (
+                  <tr
+                    key={keyField ? item[keyField] : rowIndex}
+                    className={className.tr}
+                    onClick={() => handleRowClick(item)}
+                  >
+                    {columns.map((col, cellIndex) => (
+                      <td
+                        key={col.key || cellIndex}
+                        className={"truncate " + className.td}
+                      >
+                        {col.render
+                          ? col.render(item, rowIndex)
+                          : item[col.key]}
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })
             ) : (
               <tr>
-                <td colSpan={coloums.length} className="py-10 text-[#666666]">
+                <td colSpan={columns.length} className="py-10 text-[#666666]">
                   {noDataMessage}
                 </td>
               </tr>

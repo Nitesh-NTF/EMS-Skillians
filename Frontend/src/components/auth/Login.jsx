@@ -15,7 +15,7 @@ import {
   forgotPassword,
   login as loginApi,
   resetPassword,
-} from "../../service/authentication";
+} from "../../service/apis/authentication";
 import { login } from "../../store/authSlice";
 
 export const Login = () => {

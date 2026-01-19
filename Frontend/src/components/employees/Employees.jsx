@@ -7,7 +7,7 @@ import { Table } from "../common/Table";
 import { Pagination } from "../common/Pagination";
 import { SearchBar } from "../common/SearchBar";
 import { ReactIcons } from "../constants/react_icons";
-import { deleteEmployee, fetchEmployees } from "../../service/employee";
+import { deleteEmployee, fetchEmployees } from "../../service/apis/employee";
 import { StatusBadge } from "../common/StatusBadge";
 
 export const ManageEmployee = ({
@@ -51,7 +51,7 @@ export const ManageEmployee = ({
     }
   }
 
-  console.log("user", user);
+  // console.log("user", user);
   const fetchFn = useCallback(async () => {
     try {
       setLoading((prev) => ({ ...prev, user: true }));
@@ -131,7 +131,7 @@ export const ManageEmployee = ({
           tr: "border-b-2 border-b-gray-200",
           td: "py-1.5 text-center",
         }}
-        coloums={[
+        columns={[
           {
             key: "name",
             header: "Name",

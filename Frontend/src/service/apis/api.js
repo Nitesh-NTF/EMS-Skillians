@@ -1,6 +1,6 @@
 import axios from "axios"
-import { store } from "../store/store";
-import { logout } from "../store/authSlice";
+import { store } from "../../store/store";
+import { logout } from "../../store/authSlice";
 
 export const API = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,

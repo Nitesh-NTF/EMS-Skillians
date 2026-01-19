@@ -12,7 +12,7 @@ export const Pagination = ({
 
   return (
     <div className="my-5">
-      <div className="w-2/5 mx-auto flex items-center gap-4">
+      <div className="w-2/6 mx-auto flex items-center justify-between">
         <button
           onClick={() => changePage(page - 1)}
           disabled={page == 1}

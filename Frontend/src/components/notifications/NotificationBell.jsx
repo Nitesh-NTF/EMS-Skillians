@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { IoNotifications } from "react-icons/io5";
 import NotificationBox from "./NotificationBox";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Notification Bell Component
@@ -9,23 +10,14 @@ import NotificationBox from "./NotificationBox";
  * Opens notification drawer on click
  */
 const NotificationBell = () => {
-  const dispatch = useDispatch();
   const { unreadCount } = useSelector((state) => state.notifications);
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleToggle = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const handleClose = () => {
-    setIsOpen(false);
-  };
+  const navigate = useNavigate();
 
   return (
     <div className="relative">
       {/* Bell Icon Button */}
       <button
-        onClick={handleToggle}
+        onClick={() => navigate("/inbox")}
         className="relative p-2 text-xl text-gray-700 hover:text-blue-600 transition-colors rounded-full hover:bg-gray-100"
         aria-label="Notifications"
         title="Notifications"
@@ -39,26 +31,6 @@ const NotificationBell = () => {
           </span>
         )}
       </button>
-
-      {/* Notification Box Drawer */}
-      {isOpen && (
-        <div className="fixed inset-0 z-40 lg:static lg:z-auto lg:inset-auto" >
-          {/* Overlay on mobile */}
-          {/* <div
-            className="fixed inset-0 bg-opacity-50 lg:hidden"
-            onClick={handleClose}
-          /> */}
-
-          {/* Notification Box */}
-          <div className="fixed right-0 top-0 w-full max-w-md bg-white shadow-lg z-50 lg:top-12 lg:right-0 lg:max-w-md lg:rounded-lg lg:border lg:border-gray-200 overflow-hidden flex flex-col">
-            <NotificationBox
-              onClose={handleClose}
-              header={true}
-              viewAllBtn={true}
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 };
