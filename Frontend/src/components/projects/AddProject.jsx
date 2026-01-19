@@ -70,7 +70,7 @@ export const AddProject = () => {
         });
         console.log("res", res.data);
         toast.success(res.message);
-        navigate("/projects");
+        navigate(`/projects/${projectId}/workTimeEntries`);
       }
     } catch (error) {
       console.log("err: ", error);

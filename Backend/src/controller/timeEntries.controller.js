@@ -21,7 +21,6 @@ export const createTimeEntry = asyncHandler(async (req, res) => {
         endTime,
         employee: employee || req.user._id
     })
-
     await Project.findByIdAndUpdate(project, { $inc: { duration: duration } },)
 
     const populatedEntry = await TimeEntry.findById(timeEntry._id)

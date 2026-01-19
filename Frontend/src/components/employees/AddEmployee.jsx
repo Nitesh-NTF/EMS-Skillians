@@ -65,7 +65,7 @@ export const AddEmployee = () => {
         });
         console.log("res", res.data);
         toast.success(res.message);
-        navigate("/employees");
+        navigate(`/employees/${empId}/workTimeEntries`);
       }
     } catch (error) {
       console.log("err: ", error);
