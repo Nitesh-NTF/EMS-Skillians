@@ -1,9 +1,6 @@
 import jwt from "jsonwebtoken";
+import { ApiError } from "../utils/cutomResponse.js";
 
-/**
- * Socket.IO Authentication Middleware
- * Validates JWT token from socket handshake and attaches user info
- */
 export const socketAuthMiddleware = (socket, next) => {
     try {
         // Get token from handshake auth or query
@@ -11,7 +8,7 @@ export const socketAuthMiddleware = (socket, next) => {
             socket.handshake.headers?.authorization?.split(" ")[1];
 
         if (!token) {
-            return next(new Error("❌ Authentication error: No token provided"));
+            return next(new ApiError(401, "❌ Authentication error: No token provided"));
         }
 
         try {
@@ -26,9 +23,9 @@ export const socketAuthMiddleware = (socket, next) => {
             console.log(`✅ Socket authenticated for user: ${socket.userName} (${socket.userId})`);
             next();
         } catch (error) {
-            return next(new Error("❌ Authentication error: Invalid or expired token"));
+            return next(new ApiError(401, "❌ Authentication error: Invalid or expired token"));
         }
     } catch (error) {
-        return next(new Error("❌ Authentication error: " + error.message));
+        return next(new ApiError(401, "❌ Authentication error: " + error.message));
     }
 };

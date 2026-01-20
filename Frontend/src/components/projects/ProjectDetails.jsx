@@ -3,16 +3,11 @@ import { useNavigate, useParams, Outlet } from "react-router-dom";
 import toast from "react-hot-toast";
 import { MultiTabs } from "../common/MultiTabs";
 import { BackButton } from "../common/BackButton";
-import {
-  FullScreenLoader,
-  PulseLoader,
-  SkeletonLoader,
-} from "../common/Loading";
-import { ReactIcons } from "../constants/react_icons";
-import { images } from "../constants/images";
+import { SkeletonLoader } from "../common/Loading";
 import { getProject, toggleProjectStatus } from "../../service/apis/project";
 import { StatusModal } from "../common/StatusModal";
 import { StatusBadge } from "../common/StatusBadge";
+import { useSelector } from "react-redux";
 
 export const ProjectDetails = () => {
   const { projectId } = useParams();
@@ -21,6 +16,7 @@ export const ProjectDetails = () => {
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("");
+  const loggedUser = useSelector((state) => state.auth.user);
 
   async function fetchProjectData() {
     setLoading(true);
@@ -49,8 +45,6 @@ export const ProjectDetails = () => {
   };
 
   const handleSetStatus = async () => {
-    // setProject({ ...project, status: selectedStatus });
-
     setLoading(true);
     try {
       const res = await toggleProjectStatus(projectId, selectedStatus);
@@ -113,25 +107,21 @@ export const ProjectDetails = () => {
                       <StatusBadge
                         status={project.status}
                         onClick={handleOpenModal}
-                        isClickable={true}
+                        isClickable={loggedUser.role.includes("Admin")}
                       />
                     </div>
-                    <div className="flex gap-2 mt-5">
-                      <button
-                        onClick={() =>
-                          navigate(`/projects/${project._id}/edit`)
-                        }
-                        className="text-white bg-[#4A6CF7] py-1 px-5 w-fit"
-                      >
-                        Edit Project
-                      </button>
-                      {/* <button
-                        onClick={handleOpenModal}
-                        className="text-red-800 border border-red-800 hover:bg-red-800 hover:text-white transition py-1 px-6 w-fit"
-                      >
-                        Change Status
-                      </button> */}
-                    </div>
+                    {loggedUser.role.includes("Admin") && (
+                      <div className="flex gap-2 mt-5">
+                        <button
+                          onClick={() =>
+                            navigate(`/projects/${project._id}/edit`)
+                          }
+                          className="text-white bg-[#4A6CF7] py-1 px-5 w-fit"
+                        >
+                          Edit Project
+                        </button>
+                      </div>
+                    )}
                   </div>
                   <div className="col-span-3 mt-2">
                     <p>

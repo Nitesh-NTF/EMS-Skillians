@@ -8,7 +8,8 @@ import { AvatarGroup } from "../common/AvatarGroup";
 import { Loader } from "../common/Loading";
 import { ReactIcons } from "../constants/react_icons";
 import { fetchProjects } from "../../service/apis/project";
-import { getColorOnPercentage } from "../../utils/helpingFns";
+import { getColorOnPercentage, getPercentage } from "../../utils/helpingFns";
+import { useNavigate } from "react-router-dom";
 
 export const MyProjects = () => {
   const [projects, setProjects] = useState([]);
@@ -18,6 +19,7 @@ export const MyProjects = () => {
     search: "",
   });
   const timerRef = useRef();
+  const naviagte = useNavigate();
 
   function handleSearch(e) {
     setLoadng(true);
@@ -70,7 +72,8 @@ export const MyProjects = () => {
           projects.map((p) => (
             <div
               key={p._id}
-              className="bg-[#EAFAFF] hover:shadow-xl transition rounded-md p-7"
+              onClick={() => naviagte(`/projects/${p._id}/workTimeEntries`)}
+              className="bg-[#EAFAFF] hover:shadow-xl hover:scale-105 transition rounded-md p-7"
             >
               <div className="flex">
                 <div className="text-[12px] w-full font-medium">
@@ -90,14 +93,14 @@ export const MyProjects = () => {
                   <Box className="w-full">
                     <LinearProgress
                       variant="determinate"
-                      value={p.progressPercentage}
+                      value={getPercentage(p.duration, p.estimatedHours)}
                       sx={{
                         height: 8,
                         borderRadius: 4,
                         backgroundColor: "#e5e7eb",
                         "& .MuiLinearProgress-bar": {
                           backgroundColor: getColorOnPercentage(
-                            p.progressPercentage
+                            getPercentage(p.duration, p.estimatedHours),
                           ),
                           transition: "transform 0.5s ease",
                         },
@@ -105,7 +108,7 @@ export const MyProjects = () => {
                     />
                   </Box>
                   <span style={{ color: p.progressColor }}>
-                    {p.progressPercentage}%
+                    {getPercentage(p.duration, p.estimatedHours)}%
                   </span>
                 </div>
                 <AvatarGroup avatars={p.employees} />

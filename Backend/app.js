@@ -23,7 +23,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use("/uploads", express.static("uploads"));
 
-// Initialize Socket.IO
+// Socket.IO
 export const server = createServer(app);
 const io = new Server(server, {
     cors: {
@@ -31,13 +31,9 @@ const io = new Server(server, {
         credentials: true
     }
 });
-// console.log('io', io)
 io.use(socketAuthMiddleware);
-
 // Setup socket event handlers
 setupSocketHandlers(io);
-
-// Make io accessible to routes/controllers via req.io
 app.use((req, res, next) => {
     req.io = io;
     next();

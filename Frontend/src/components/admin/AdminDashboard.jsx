@@ -16,6 +16,7 @@ import {
   getToday,
 } from "../../utils/helpingFns";
 import { fetchProjects } from "../../service/apis/project";
+import { useSelector } from "react-redux";
 
 const graphData = [
   2.5,
@@ -113,7 +114,7 @@ export const AdminDashboard = () => {
       description: "⚠️ 1 project is delayed.",
     },
   ]);
-
+  const loggedUser = useSelector(state=>state.auth.user)
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState({ projectTable: true });
 
@@ -189,6 +190,7 @@ export const AdminDashboard = () => {
               columns={ProjectCol}
               data={projects}
               path="/projects"
+              rowClickable={loggedUser.role.includes("Admin")}
               className={{
                 table:
                   "text-center text-[#303031] my-5 border-separate border-spacing-y-3 w-full",

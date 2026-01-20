@@ -47,7 +47,7 @@ export const StatusBadge = ({
 
   return (
     <span
-      onClick={onClick}
+      onClick={isClickable ? onClick : ()=>{}}
       className={`
         px-5 py-1 rounded-2xl mr-2 w-fit
         ${styles.text} ${styles.bg}

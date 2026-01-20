@@ -1,16 +1,17 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useCallback, useMemo, useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import { BackButton } from "../common/BackButton";
 import { Table } from "../common/Table";
+import { AvatarGroup } from "../common/AvatarGroup";
 import { Pagination } from "../common/Pagination";
 import { SearchBar } from "../common/SearchBar";
 import { ReactIcons } from "../constants/react_icons";
-import { deleteEmployee, fetchEmployees } from "../../service/apis/employee";
+import { deleteProject, fetchProjects } from "../../service/apis/project";
 import { StatusBadge } from "../common/StatusBadge";
 
-export const ManageEmployee = ({
+export const ManageProjects = ({
   search = false,
   status = false,
   addBtn = false,
@@ -19,17 +20,17 @@ export const ManageEmployee = ({
   actions = false,
 }) => {
   const navigate = useNavigate();
-  const [user, setUser] = useState([]);
+  const [projects, setProjects] = useState([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
   const [total, setTotal] = useState(0);
   const [query, setQuery] = useState({
     search: "",
-    department: "",
+    status: "",
   });
-  const [loading, setLoading] = useState({ user: true });
+  const [loading, setLoading] = useState({ project: true });
   const timerRef = useRef();
-  const { projectId } = useParams();
+  const { empId } = useParams();
   const loggedUser = useSelector((state) => state.auth.user);
 
   function handleSearch(e) {
@@ -38,35 +39,34 @@ export const ManageEmployee = ({
   }
 
   async function handleDelete(id) {
-    setLoading((prev) => ({ ...prev, user: true }));
+    setLoading((prev) => ({ ...prev, project: true }));
     try {
-      const res = await deleteEmployee(id);
+      const res = await deleteProject(id);
       toast.success(res.message);
-      fetchFn();
+      fetchData();
     } catch (error) {
       console.log("err: ", error);
       toast.error(error.response?.data.message);
     } finally {
-      setLoading((prev) => ({ ...prev, user: false }));
+      setLoading((prev) => ({ ...prev, project: false }));
     }
   }
 
-  // console.log("user", user);
-  const fetchFn = useCallback(async () => {
+  const fetchData = useCallback(async () => {
     try {
-      setLoading((prev) => ({ ...prev, user: true }));
-      const res = await fetchEmployees({
+      const res = await fetchProjects({
         ...query,
         ...(pagination && { page, limit }),
-        ...(projectId && { project: [projectId] }),
+        ...(empId && { employees: [empId] }),
       });
-      setUser(res.data.employees);
+      // console.log("res.data", res.data);
+      setProjects(res.data.projects);
       setTotal(res.data.pagination.total);
     } catch (error) {
       console.log("err: ", error);
       toast.error(error.response?.data.message);
     } finally {
-      setLoading((prev) => ({ ...prev, user: false }));
+      setLoading((prev) => ({ ...prev, project: false }));
     }
   }, [query, page, limit]);
 
@@ -75,21 +75,21 @@ export const ManageEmployee = ({
   }, [query, limit]);
 
   useEffect(() => {
-    setLoading((prev) => ({ ...prev, user: true }));
+    setLoading((prev) => ({ ...prev, project: true }));
     clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => fetchFn(), 1000);
-  }, [query, fetchFn]);
+    timerRef.current = setTimeout(() => fetchData(), 1000);
+  }, [query, fetchData]);
 
   return (
     <div>
       {/* title */}
-      {title && <BackButton title="Employee Management" />}
+      {title && <BackButton title="Project Management" />}
 
       <div className="text-gray-600 flex items-center gap-8 my-4">
         {/* search */}
         {search && (
           <SearchBar
-            placeholder="Search Employees..."
+            placeholder="Search Projects..."
             value={query.search}
             onChange={handleSearch}
           />
@@ -97,78 +97,106 @@ export const ManageEmployee = ({
 
         {/* status filter */}
         {status && (
-          <select className="input" name="department" onChange={handleSearch}>
-            <option value="">All Departments</option>
-            {["Development", "UI/UX", "Bubble"].map((dept, index) => (
-              <option key={index} value={dept}>
-                {dept}
-              </option>
-            ))}
+          <select className="input" name="status" onChange={handleSearch}>
+            <option value="">All Status</option>
+            {["Start", "Pending", "In Progress", "Complete", "Blocked"].map(
+              (dept, index) => (
+                <option key={index} value={dept}>
+                  {dept}
+                </option>
+              ),
+            )}
           </select>
         )}
 
         {/* Add btn */}
         {addBtn && (
           <button
-            onClick={() => navigate("/employees/add")}
+            onClick={() => navigate("/projects/add")}
             className="flex text-white bg-amber-600 p-2.5 rounded-sm px-10 cursor-pointer text-center items-center justify-center gap-1 min-w-max"
           >
             <ReactIcons.IoAdd />
-            Add Employee
+            Add Project
           </button>
         )}
       </div>
-
       <Table
-        data={user}
-        loading={loading.user}
-        keyField="_id"
-        path={`/employees`}
+        data={projects}
+        loading={loading.project}
+        path="/projects"
         rowClickable={loggedUser.role.includes("Admin")}
+        keyField="_id"
         className={{
-          thead: "text-center bg-gray-300 text-cyan-900",
-          tbody: "text-gray-600",
-          th: "p-2",
-          tr: "border-b-2 border-b-gray-200",
-          td: "py-1.5 text-center",
+          thead: "text-[#215675] border-b-2 border-gray-300 ",
+          th: "px-2 py-3 bg-[#EDF2F7] font-medium",
+          tr: "bg-white border-b-2 border-gray-300",
+          td: "px-2 py-3",
         }}
         columns={[
           {
             key: "name",
-            header: "Name",
+            header: "Project Name",
             render: (row) => (
-              <span className="py-1.5 flex items-center gap-2">
-                {" "}
-                <span className="w-7 h-7 rounded-full overflow-hidden">
-                  <img
-                    src={row.icon || null}
-                    alt="emp_profile"
-                    className="w-full scale-110"
-                  />
-                </span>
-                {row.name}
-              </span>
+              <div className="flex items-center">
+                <img
+                  className="w-7 h-7 mr-3"
+                  src={row.icon || null}
+                  alt="icon"
+                />
+                <div className="text-left">
+                  <strong className="font-medium">{row.name}</strong>
+                  <p className="text-[#616161] text-[11px] text-left">
+                    {row.category}
+                  </p>
+                </div>
+              </div>
             ),
           },
-          { key: "email", header: "Email" },
-          { key: "department", header: "Department" },
+          {
+            key: "client",
+            header: "Client",
+            render: (row) => (
+              <span className="text-[#215675]">{row.client}</span>
+            ),
+          },
+          {
+            key: "members",
+            header: "Team Members",
+            render: (row, index) => (
+              <div>
+                {" "}
+                <AvatarGroup
+                  className="mx-auto"
+                  avatars={row.employees}
+                  sizeInPixel={30}
+                  spacing={20}
+                />
+              </div>
+            ),
+          },
           {
             key: "status",
             header: "Status",
             render: (row) => <StatusBadge status={row.status} />,
           },
+          {
+            key: "duration",
+            header: "Hours",
+            render: (row, index) => (
+              <span className="text-[#215675]">{row.duration}</span>
+            ),
+          },
           ...(loggedUser.role.includes("Admin") && actions
             ? [
                 {
                   key: "action",
-                  header: "Action",
-                  render: (row) => (
+                  header: "Actions",
+                  render: (row, index) => (
                     <>
-                      {" "}
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          navigate(`/employees/${row._id}/edit`);
+                          navigate(`/projects/${row._id}/edit`);
                         }}
                         className="px-3 py-1 text-green-800 bg-slate-300 rounded-md mr-2"
                       >
@@ -191,7 +219,8 @@ export const ManageEmployee = ({
         ]}
       />
 
-      {pagination && user.length > 0 && (
+      {/* Pagination */}
+      {pagination && projects.length > 0 && (
         <Pagination
           limit={limit}
           page={page}
@@ -202,21 +231,3 @@ export const ManageEmployee = ({
     </div>
   );
 };
-
-export function Employees() {
-  const location = useLocation();
-  const isManageTable =
-    !location.pathname.includes("/employees/") &&
-    location.pathname === "/employees";
-  return isManageTable ? (
-    <ManageEmployee
-      search={true}
-      status={true}
-      addBtn={true}
-      pagination={true}
-      actions={true}
-    />
-  ) : (
-    <Outlet />
-  );
-}

@@ -8,11 +8,8 @@ import {
   deleteNotification,
 } from "../../service/apis/notification";
 import { ReactIcons } from "../constants/react_icons";
+import { formatDate } from "../../utils/helpingFns";
 
-/**
- * Notification Item Component
- * Single notification card with read/delete actions
- */
 const NotificationItem = ({ notification }) => {
   const dispatch = useDispatch();
 
@@ -34,22 +31,6 @@ const NotificationItem = ({ notification }) => {
     }
   };
 
-  const formatDate = (date) => {
-    const d = new Date(date);
-    const now = new Date();
-    const diffMs = now - d;
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
-
-    if (diffMins < 1) return "Just now";
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
-
-    return d.toLocaleDateString();
-  };
-
   return (
     <div
       className={`p-1.5 hover:bg-gray-50 transition-colors cursor-pointer ${
@@ -57,19 +38,7 @@ const NotificationItem = ({ notification }) => {
       }`}
       onClick={!notification.isRead ? handleMarkAsRead : undefined}
     >
-      {/* Notification Header */}
       <div className="flex items-start gap-1">
-        {/* Icon */}
-        <div className="mt-1">
-          {/* <FaBell
-            className={`text-lg ${
-              notification.type === "PROJECT_EMPLOYEE_ADDED"
-                ? "text-green-500"
-                : "text-orange-500"
-            }`}
-          /> */}
-        </div>
-
         {/* Content */}
         <div className="flex-1 min-w-0">
           {/* Title and Read Badge */}
@@ -86,12 +55,6 @@ const NotificationItem = ({ notification }) => {
           <p className="text-gray-600 text-xs mt-1 line-clamp-2">
             {notification.message}
           </p>
-
-          {/* Project Info
-          <p className="text-gray-500 text-xs mt-2">
-            Project:{" "}
-            <span className="font-medium">{notification.projectName}</span>
-          </p> */}
 
           {/* Time */}
           <p className="text-gray-400 text-[8px] mt-1">

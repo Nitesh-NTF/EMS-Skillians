@@ -8,6 +8,7 @@ export const Table = ({
   keyField = undefined,
   noDataMessage = "No Exists",
   path = "",
+  rowClickable = false,
   className = {
     table: "",
     thead: "",
@@ -55,7 +56,7 @@ export const Table = ({
                   <tr
                     key={keyField ? item[keyField] : rowIndex}
                     className={className.tr}
-                    onClick={() => handleRowClick(item)}
+                    onClick={() => rowClickable? handleRowClick(item): ()=>{}}
                   >
                     {columns.map((col, cellIndex) => (
                       <td

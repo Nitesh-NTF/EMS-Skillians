@@ -31,7 +31,7 @@ export const addProject = asyncHandler(async (req, res) => {
             { $addToSet: { projects: project._id } }
         );
 
-        console.log('req.body.employees', req.body.employees)
+        // console.log('req.body.employees', req.body.employees)
         // 🔔 Trigger notification (non-blocking)
         try {
             await updateEmployeeInproject({
@@ -92,9 +92,9 @@ export const updateProject = asyncHandler(async (req, res) => {
     const toAdd = newEmployees.filter(emp => !oldEmployees.includes(emp));
     const toRemove = oldEmployees.filter(emp => !newEmployees.includes(emp));
 
-    console.log('toAdd', toAdd)
-    console.log('toRemove', toRemove)
-    console.log('req.io', req.io)
+    // console.log('toAdd', toAdd)
+    // console.log('toRemove', toRemove)
+    // console.log('req.io', req.io)
 
     if (toAdd.length > 0) {
         const res = await Employee.updateMany(

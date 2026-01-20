@@ -1,19 +1,37 @@
 import { Notification } from "../model/notification.model.js";
 import { ApiError, successResponse } from "../utils/cutomResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { markAsRead, getUserNotifications, getUnreadCount } from "../utils/notificationService.js";
 import { isValidObjectId } from "mongoose";
 
 
 export const fetchNotifications = asyncHandler(async (req, res) => {
-    const { page = 1, limit = 10 } = req.query;
+    const { page = 1, limit = 10, keyword = "" } = req.query;
     const userId = req.user._id;
 
-    const { notifications, pagination } = await getUserNotifications(
-        userId,
-        parseInt(page),
-        parseInt(limit)
-    );
+    const skip = (page - 1) * limit;
+
+    let query = {
+        recipients: userId
+    }
+    if (keyword) {
+        query.$or = [
+            { title: { $regex: keyword, $options: "i" } },
+            { message: { $regex: keyword, $options: "i" } }
+        ]
+    }
+
+    const notifications = await Notification.find(query)
+        .populate("projectId", "name")
+        .populate("triggeredBy", "name email")
+        .populate("recipients", "name email")
+        .sort({ createdAt: -1 })
+        .limit(limit)
+        .skip(skip)
+        .lean();
+
+    const total = await Notification.countDocuments(query);
+
+    const pagination = { total, page, limit, pages: Math.ceil(total / limit) }
 
     successResponse(res, 200, "Notifications fetched successfully", {
         notifications,
@@ -24,7 +42,11 @@ export const fetchNotifications = asyncHandler(async (req, res) => {
 export const getUnreadNotificationCount = asyncHandler(async (req, res) => {
     const userId = req.user._id;
 
-    const count = await getUnreadCount(userId);
+    const count = await Notification.countDocuments({
+        recipients: userId,
+        isRead: false
+    });
+
     successResponse(res, 200, "Unread count fetched", { unreadCount: count });
 });
 
@@ -53,25 +75,24 @@ export const getNotificationById = asyncHandler(async (req, res) => {
 
 export const markNotificationAsRead = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const userId = req.user._id;
 
     if (!isValidObjectId(id)) {
         throw new ApiError(400, "Invalid notification ID");
     }
 
-    // Verify notification belongs to user
-    const notification = await Notification.findOne({
-        _id: id,
-        recipients: userId
-    });
+    const notification = await Notification.findByIdAndUpdate(
+        id,
+        {
+            isRead: true,
+            readAt: new Date()
+        },
+        { new: true }
+    );
 
     if (!notification) {
         throw new ApiError(404, "Notification not found");
     }
-
-    const updated = await markAsRead(id, userId);
-
-    successResponse(res, 200, "Notification marked as read", updated);
+    successResponse(res, 200, "Notification marked as read", notification);
 });
 
 export const markAllAsRead = asyncHandler(async (req, res) => {

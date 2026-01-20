@@ -56,7 +56,7 @@ const employeeRoutes = [
   },
   {
     header: "Project",
-    path: "/my-projects",
+    path: "/projects",
     icon: <ReactIcons.FaRegFileAlt />,
   },
   {
