@@ -213,6 +213,7 @@ export function Employees() {
       search={true}
       status={true}
       addBtn={true}
+      title={true}
       pagination={true}
       actions={true}
     />
