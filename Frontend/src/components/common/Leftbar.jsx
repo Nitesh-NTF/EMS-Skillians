@@ -37,8 +37,8 @@ const adminRoutes = [
   //   icon: <ReactIcons.BsFileEarmarkBarGraph />,
   // },
   {
-    header: "Setting",
-    path: "/setting",
+    header: "Profile",
+    path: "/profile",
     icon: <ReactIcons.MdOutlineSettings />,
   },
 ];
@@ -60,8 +60,8 @@ const employeeRoutes = [
     icon: <ReactIcons.FaRegFileAlt />,
   },
   {
-    header: "Setting",
-    path: "/setting",
+    header: "Profile",
+    path: "/profile",
     icon: <ReactIcons.MdOutlineSettings />,
   },
 ];

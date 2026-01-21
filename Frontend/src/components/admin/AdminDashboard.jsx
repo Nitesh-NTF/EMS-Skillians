@@ -73,14 +73,14 @@ const ProjectCol = [
     render: (row) => <>{getToday(row.createdAt)}</>,
   },
   {
-    key: "startTime",
-    header: "Start Time",
-    render: (row) => <>{getTime(row.startTime)}</>,
+    key: "startDate",
+    header: "Start Date",
+    render: (row) => <>{row.startDate}</>,
   },
   {
-    key: "endTime",
-    header: "End Time",
-    render: (row) => <>{getTime(row.endTime)}</>,
+    key: "endDate",
+    header: "End Date",
+    render: (row) => <>{ row.endDate}</>,
   },
   {
     key: "duration",
@@ -114,7 +114,7 @@ export const AdminDashboard = () => {
       description: "⚠️ 1 project is delayed.",
     },
   ]);
-  const loggedUser = useSelector(state=>state.auth.user)
+  const loggedUser = useSelector((state) => state.auth.user);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState({ projectTable: true });
 

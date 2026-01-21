@@ -54,7 +54,7 @@ export const AddEmployee = () => {
       if (!empId) {
         delete data._id;
         const res = await addEmployee(data);
-        console.log("res", res.data);
+        // console.log("res", res.data);
         toast.success(res.message);
         reset();
         navigate("/employees");
@@ -63,7 +63,7 @@ export const AddEmployee = () => {
           ...data,
           _id: empId,
         });
-        console.log("res", res.data);
+        // console.log("res", res.data);
         toast.success(res.message);
         navigate(`/employees/${empId}/workTimeEntries`);
       }

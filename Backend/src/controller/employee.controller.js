@@ -71,7 +71,7 @@ export const updateEmployee = asyncHandler(async (req, res) => {
         const [uploadedUrl] = await Promise.all(promiseArr)
         file = uploadedUrl
     }
-    console.log('req.body', req.body)
+    // console.log('req.body', req.body)
     const updatedEmployee = await Employee.findByIdAndUpdate(id, { name, email, department, status, icon: file, role: req.body.role }, { new: true }).select("-password")
     successResponse(res, 200, "Employee updated successfully", updatedEmployee)
 })

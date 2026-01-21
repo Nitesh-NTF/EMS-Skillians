@@ -156,7 +156,7 @@ const NotificationBox = ({
         </div>
 
         {/* paginations */}
-        {pagination && notifications.length > 0 && (
+        {pagination && notifications.length > 0 && !loading &&(
           <Pagination
             changePage={setPage}
             page={page}

@@ -14,6 +14,7 @@ export const addEmployee = async (data) => {
 }
 
 export const updateEmployee = async (data) => {
+    // console.log('data', data)
     const formData = new FormData()
     Object.entries(data).forEach(([key, value]) => {
         formData.append(key, value)

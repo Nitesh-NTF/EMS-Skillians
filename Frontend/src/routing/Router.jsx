@@ -9,7 +9,7 @@ import { AddEmployee } from "../components/employees/AddEmployee";
 import { PersonalDetails } from "../components/admin/PersonalDetails";
 import { AdminDashboard } from "../components/admin/AdminDashboard";
 import { Settings } from "../components/admin/Settings";
-import {  Projects } from "../components/projects/Projects";
+import { Projects } from "../components/projects/Projects";
 import { AddProject } from "../components/projects/AddProject";
 import { EmployeeDashboard } from "../components/employees/EmployeeDashboard";
 import { ProjectDetails } from "../components/projects/ProjectDetails";
@@ -50,7 +50,6 @@ const adminRoutes = [
           { path: "add", element: <AddEmployee /> },
         ],
       },
-      // { path: "time", element: <TimeEntries /> },
       {
         path: "projects",
         element: <Projects />,
@@ -75,8 +74,7 @@ const adminRoutes = [
           { path: "add", element: <AddProject /> },
         ],
       },
-      // { path: "report", element: <TimeReports /> },
-      { path: "setting", element: <Settings /> },
+      { path: "/profile", element: <PersonalDetails /> },
     ],
   },
 ];
@@ -111,9 +109,7 @@ const employeeRoutes = [
           },
         ],
       },
-      // { path: "time", element: <TimeEntries /> },
-      // { path: "personalDetail", element: <PersonalDetails /> },
-      { path: "setting", element: <Settings /> },
+      { path: "/profile", element: <PersonalDetails /> },
     ],
   },
 ];
