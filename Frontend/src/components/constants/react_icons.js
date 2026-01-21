@@ -18,6 +18,8 @@ import { MdEmail } from "react-icons/md";
 import { FaLock } from "react-icons/fa";
 import { RiCheckDoubleFill } from "react-icons/ri";
 import { FaInbox } from "react-icons/fa";
+import { FaUsers } from "react-icons/fa";
+import { FaClock } from "react-icons/fa";
 
 export const ReactIcons = {
     LiaHomeSolid,
@@ -39,5 +41,7 @@ export const ReactIcons = {
     MdEmail,
     FaLock,
     RiCheckDoubleFill,
-    FaInbox
+    FaInbox,
+    FaUsers,
+    FaClock
 };

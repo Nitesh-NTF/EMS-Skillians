@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Box, LinearProgress } from "@mui/material";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { PieChart } from "@mui/x-charts";
+import CountUp from "react-countup"
 import { Table } from "../common/Table";
 import { BackButton } from "../common/BackButton";
 import { Card } from "../common/Card";
@@ -17,6 +18,9 @@ import {
 } from "../../utils/helpingFns";
 import { fetchProjects } from "../../service/apis/project";
 import { useSelector } from "react-redux";
+import { getAdminStats } from "../../service/apis/admin";
+import toast from "react-hot-toast";
+import { ButtonLoader, PulseLoader, SkeletonLoader } from "../common/Loading";
 
 const graphData = [
   2.5,
@@ -80,7 +84,7 @@ const ProjectCol = [
   {
     key: "endDate",
     header: "End Date",
-    render: (row) => <>{ row.endDate}</>,
+    render: (row) => <>{row.endDate}</>,
   },
   {
     key: "duration",
@@ -92,31 +96,41 @@ const ProjectCol = [
 export const AdminDashboard = () => {
   // const data = useContextData();
   const [avatarsData, setAvatarsData] = useState([]);
-  const [projectStatus] = useState([
-    {
-      color: "#DE29A7",
-      status: "Projects Behind Schedule",
-      description: "⚠️ 0 projects at risk of missing deadlines",
-    },
-    {
-      color: "#3B8BE7",
-      status: "High Priority Projects",
-      description: "🔥 3 high priority projects in progress",
-    },
-    {
-      color: "#E7873B",
-      status: "Total Active Projects",
-      description: "📊 5 active projects this month.",
-    },
-    {
-      color: "#09883E",
-      status: "Delayed Projects",
-      description: "⚠️ 1 project is delayed.",
-    },
-  ]);
+  // const [projectStatus] = useState({
+  //   Start: {
+  //     color: "#DE29A7",
+  //     status: "Projects not Start",
+  //     description: "⚠️ 0 projects at risk of missing deadlines",
+  //   },
+  //   Pending: {
+  //     color: "#3B8BE7",
+  //     status: "Totol Pending projects",
+  //     description: "🔥 3 high priority projects in progress",
+  //   },
+  //   "In progress": {
+  //     color: "#E7873B",
+  //     status: "In Progress/Active projects",
+  //     description: "📊 5 active projects this month.",
+  //   },
+  //   Complete: {
+  //     color: "#09883E",
+  //     status: "Completed Projects",
+  //     description: "⚠️ 1 project is delayed.",
+  //   },
+  //   Blocked: {
+  //     color: "#09883E",
+  //     status: "Delayed Projects",
+  //     description: "⚠️ 1 project is Blocked.",
+  //   },
+  // });
   const loggedUser = useSelector((state) => state.auth.user);
   const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState({ projectTable: true });
+  const [stats, setStats] = useState({
+    totalEmployees: 0,
+    totalWorkHours: 0,
+    projectsByStatus: {},
+  });
+  const [loading, setLoading] = useState({ projectTable: true, stats: true });
 
   const fetchProjectsFn = async () => {
     try {
@@ -130,8 +144,22 @@ export const AdminDashboard = () => {
     }
   };
 
+  const fetchDashboardStatsFn = async () => {
+    try {
+      const res = await getAdminStats();
+      console.log("res.data", res.data);
+      setStats(res.data);
+    } catch (error) {
+      console.log("error: ", error);
+      toast(error.response.data.message);
+    } finally {
+      setLoading((prev) => ({ ...prev, stats: false }));
+    }
+  };
+
   useEffect(() => {
     fetchProjectsFn();
+    fetchDashboardStatsFn();
   }, []);
 
   return (
@@ -142,36 +170,67 @@ export const AdminDashboard = () => {
       />
       <div className="flex gap-13 my-4">
         <Card className="text-xs p-5 min-w-max h-full">
-          <p>Total Employee</p>
-          <p className="text-[#215675] text-4xl my-3">24</p>
-          <p className="flex items-center gap-1 text-[#E7873B]">
-            <ReactIcons.FaArrowUpLong /> 2 this month
-          </p>
+          {loading.stats ? (
+            <div className="space-y-4 animate-pulse w-28">
+              <div className="h-4 bg-gray-300 rounded w-full"></div>
+              <div className="h-4 bg-gray-300 rounded w-full"></div>
+              <div className="h-4 bg-gray-300 rounded w-full"></div>
+            </div>
+          ) : (
+            <>
+              <p>Total Employee</p>
+              <p className="text-[#215675] text-4xl my-3">
+                 <CountUp end={stats.totalEmployees} duration={1}/>
+              </p>
+              <p className="flex items-center gap-1 text-[#E7873B]">
+                <ReactIcons.FaUsers /> this month
+              </p>
+            </>
+          )}
         </Card>
         <Card className="text-xs p-5 min-w-max h-full">
-          <p>Hours Logged (Month)</p>
-          <p className="text-[#215675] text-4xl my-3">1,245</p>
-          <p className="flex items-center gap-1 text-[#E7873B]">
-            <ReactIcons.FaArrowUpLong /> 12 % from last month
-          </p>
-        </Card>
-
-        <Card className="text-xs w-full h-full">
-          <div className="flex justify-between py-4 px-5 border-b-2 border-gray-300">
-            <h1 className="text-base">Active Projects</h1>
-            <div className="text-[8px] text-center font-light">
-              Totol members
-              <AvatarGroup avatars={avatarsData} />
+          {loading.stats ? (
+            <div className="space-y-4 animate-pulse w-28">
+              <div className="h-4 bg-gray-300 rounded w-full"></div>
+              <div className="h-4 bg-gray-300 rounded w-full"></div>
+              <div className="h-4 bg-gray-300 rounded w-full"></div>
             </div>
-          </div>
-          <div className="grid grid-cols-2 gap-2.5 py-4 px-5 text-[#6E7176]">
-            {projectStatus.map((item, index) => (
-              <div key={index}>
-                <h2 style={{ color: item.color }}>{item.status}</h2>
-                <p className="text-xs">{item.description}</p>
+          ) : (
+            <>
+              <p>Work Hours (Month)</p>
+              <p className="text-[#215675] text-4xl my-3">
+               <CountUp end={stats.totalWorkHours} duration={1}/>
+              </p>
+              <p className="flex items-center gap-1 text-[#E7873B]">
+                <ReactIcons.FaClock /> this month
+              </p>
+            </>
+          )}
+        </Card>
+        <Card className="text-xs w-full h-full">
+          {loading.stats ? (
+            <SkeletonLoader />
+          ) : (
+            <>
+              <div className="flex justify-between pt-2 px-5 border-b-2 border-gray-300">
+                <h1 className="text-base">Active Projects</h1>
+                <div className="text-[8px] text-center font-light">
+                  Totol Projects
+                  <p className="text-sm"> <CountUp end={stats.totalProjects} duration={1}/></p>
+                </div>
               </div>
-            ))}
-          </div>
+              <div className="grid grid-cols-2 gap-2.5 py-2.5 px-5 text-[#6E7176]">
+                {Object.entries(stats.projectsByStatus).map(
+                  ([key, content]) => (
+                    <div key={key}>
+                      <h2 style={{ color: content.color }}>{content.status}</h2>
+                      <p className="text-xs">{content.description}</p>
+                    </div>
+                  ),
+                )}
+              </div>
+            </>
+          )}
         </Card>
       </div>
 
@@ -274,7 +333,7 @@ export const AdminDashboard = () => {
         </div>
       </div>
 
-      <div className="flex gap-10">
+      {/* <div className="flex gap-10">
         <FilterBox
           title="Weekly hours Tracked"
           // options={[
@@ -344,7 +403,7 @@ export const AdminDashboard = () => {
             }}
           />
         </Card>
-      </div>
+      </div> */}
     </div>
   );
 };

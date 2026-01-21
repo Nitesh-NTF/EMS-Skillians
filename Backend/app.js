@@ -49,6 +49,7 @@ app.use((req, res, next) => {
 // Import Routers
 import authenticationRouter from "./src/routes/authentication.route.js"
 import { verifyAuth } from "./src/middleware/verifyAuth.js"
+import adminRoutes from "./src/routes/admin.route.js";
 import employeeRouter from "./src/routes/employee.route.js"
 import projectRouter from "./src/routes/project.route.js"
 import timeEntriesRouter from "./src/routes/timeEntries.route.js"
@@ -57,6 +58,7 @@ import notificationRouter from "./src/routes/notification.route.js"
 // Routers
 app.get("/", (req, res) => res.status(200).json({ data: "hello server http://localhost:4000" }))
 app.use(authenticationRouter)
+app.use("/api/admin", adminRoutes);
 app.use("/api/employee", verifyAuth, employeeRouter)
 app.use("/api/project", verifyAuth, projectRouter)
 app.use("/api/time-entries", verifyAuth, timeEntriesRouter)

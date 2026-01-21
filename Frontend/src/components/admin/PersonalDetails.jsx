@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { images } from "../constants/images";
 import { RequiredSign } from "../common/RequiredSign";
-import { FullScreenLoader } from "../common/Loading";
+import { FullScreenLoader, SkeletonLoader } from "../common/Loading";
 import { updateEmployee, getEmployee } from "../../service/apis/employee";
 import { useSelector } from "react-redux";
 
@@ -45,6 +45,7 @@ export const PersonalDetails = () => {
         department: res.data.department,
         status: res.data.status,
         role: res.data.role,
+        icon:res.data.icon
       });
       setImagePreview(res.data.icon);
     } catch (error) {
@@ -79,12 +80,14 @@ export const PersonalDetails = () => {
     getCurrentUser();
   }, []);
 
+  if(loading){
+    return <SkeletonLoader />;
+  }
+
   if (!isEditing) {
     return (
       <div className="bg-white p-6">
-        {loading && <FullScreenLoader />}
-
-        <div className="flex justify-between items-start mb-6">
+          <div className="flex justify-between items-start mb-6">
           <h1 className="text-2xl font-bold text-[#215675]">
             Personal Details
           </h1>
@@ -141,8 +144,6 @@ export const PersonalDetails = () => {
 
   return (
     <div className="bg-white p-6">
-      {loading && <FullScreenLoader />}
-
       <div className="flex justify-between items-start mb-6">
         <h1 className="text-2xl font-bold text-[#215675]">
           Edit Personal Details
