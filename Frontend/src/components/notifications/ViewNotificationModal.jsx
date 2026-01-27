@@ -13,28 +13,29 @@ export const ViewNotificationModal = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const modalRef = useRef(null);
-
   const [notification, setNotification] = useState(null);
   const [isClosing, setIsClosing] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const fetchNotification = async () => {
+    // setLoading(true);
+    try {
+      const res = await getNotificationById(notificationId);
+      setNotification(res.data);
+
+      if (!res.data.isRead) {
+        await markNotificationAsRead(notificationId);
+        dispatch(markAsRead(notificationId));
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error("Failed to load notification", error);
+      navigate(-1);
+    }
+  };
 
   useEffect(() => {
     if (!notificationId) return;
-
-    const fetchNotification = async () => {
-      try {
-        const res = await getNotificationById(notificationId);
-        setNotification(res.data);
-
-        if (!res.data.isRead) {
-          await markNotificationAsRead(notificationId);
-          dispatch(markAsRead(notificationId));
-        }
-      } catch (error) {
-        console.error("Failed to load notification", error);
-        navigate(-1);
-      }
-    };
-
     fetchNotification();
   }, [notificationId, dispatch, navigate]);
 
@@ -48,8 +49,6 @@ export const ViewNotificationModal = () => {
       closeModal();
     }
   };
-
-  if (!notification) return null;
 
   return (
     <div
@@ -66,35 +65,50 @@ export const ViewNotificationModal = () => {
       >
         {/* Header */}
         <div className="px-6 pt-6 pb-4 border-b">
-          <h2 className="text-xl font-semibold text-gray-900">
-            {notification.title}
-          </h2>
-          <p className="text-xs text-gray-500 mt-1">
-            {/* {formatDateTime(notification.createdAt)} {getTime(notification.createdAt)} */}
-            {/* {new Date(notification.createdAt).toLocaleString("en-US", {
-              dateStyle: "medium",
-              timeStyle: "short",
-            })} */}
-            {extractDateTimeFromCreatedAt(notification.createdAt).date}{" "}
-            {extractDateTimeFromCreatedAt(notification.createdAt).time}
-          </p>
+          {loading ? (
+            <div className="h-5 bg-gray-300 rounded w-2/6 animate-pulse"></div>
+          ) : (
+            <>
+              {" "}
+              <h2 className="text-xl font-semibold text-gray-900">
+                {notification.title}
+              </h2>
+              <p className="text-xs text-gray-500 mt-1">
+                {extractDateTimeFromCreatedAt(notification.createdAt).date}{" "}
+                {extractDateTimeFromCreatedAt(notification.createdAt).time}
+              </p>
+            </>
+          )}
         </div>
 
         {/* Meta */}
         <div className="px-6 py-4 flex flex-wrap gap-2 text-xs">
-          <span className="bg-gray-100 px-3 py-1 rounded-full text-gray-700">
-            <strong>From:</strong> {notification.triggeredBy?.name || "System"}
-          </span>
-          <span className="bg-gray-100 px-3 py-1 rounded-full text-gray-700">
-            <strong>To:</strong>{" "}
-            {notification.recipients?.map((r) => r.name) || "You"}
-          </span>
+          {loading ? (
+            <div className="h-5 bg-gray-300 rounded w-1/4 animate-pulse"></div>
+          ) : (
+            <>
+              <span className="bg-gray-100 px-3 py-1 rounded-full text-gray-700">
+                <strong>From:</strong>{" "}
+                {notification.triggeredBy?.name || "System"}
+              </span>
+              <span className="bg-gray-100 px-3 py-1 rounded-full text-gray-700">
+                <strong>To:</strong>{" "}
+                {notification.recipients?.map((r) => r.name) || "You"}
+              </span>
+            </>
+          )}
         </div>
 
         {/* Message */}
         <div className="px-6 pb-6">
           <div className="bg-gray-50 border rounded-lg p-4 text-sm text-gray-700 leading-relaxed">
-            {notification.message}
+            {loading ? (
+              <>
+                <div className="h-20 bg-gray-300 rounded w-full animate-pulse"></div>
+              </>
+            ) : (
+              <>{notification.message}</>
+            )}
           </div>
         </div>
 
