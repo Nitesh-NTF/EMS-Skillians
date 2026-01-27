@@ -1,8 +1,9 @@
 import { API } from "./api";
+import { NOTIFICATION_DISPLAY_TYPES } from "../../components/constants/notificationDisplayTypes";
 
 export const fetchNotifications = async (query) => {
-
-    const params = { ...query }
+    const defaults = { display: NOTIFICATION_DISPLAY_TYPES.LIST }
+    const params = { ...defaults, ...query }
 
     const urlParams = new URLSearchParams()
     Object.entries(params).forEach(([key, value]) => {
@@ -18,8 +19,8 @@ export const getUnreadCount = async () => {
     return API.get("/api/notifications/unread/count").then(res => res.data)
 };
 
-export const getNotificationById = async (notificationId) => {
-    return API.get(`/api/notifications/${notificationId}`).then(res => res.data)
+export const getNotificationById = async (notificationId, display = NOTIFICATION_DISPLAY_TYPES.DETAIL) => {
+    return API.get(`/api/notifications/${notificationId}?display=${display}`).then(res => res.data)
 };
 
 export const markNotificationAsRead = async (notificationId) => {

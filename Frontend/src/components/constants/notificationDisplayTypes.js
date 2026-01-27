@@ -1,0 +1,6 @@
+export const NOTIFICATION_DISPLAY_TYPES = {
+    LIST: 'LIST',
+    DETAIL: 'DETAIL',
+    MINIMAL: 'MINIMAL',
+    BELL: 'BELL'
+}

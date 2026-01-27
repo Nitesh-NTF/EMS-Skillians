@@ -16,6 +16,7 @@ import { ProjectDetails } from "../components/projects/ProjectDetails";
 import { WorkTImeEntries } from "../components/time_entries/WorkTImeEntries";
 import { Inbox } from "../components/notifications/Inbox";
 import { ManageProjects } from "../components/projects/ManageProjects";
+import { ViewNotificationModal } from "../components/notifications/ViewNotificationModal";
 
 // Admin routes
 const adminRoutes = [
@@ -24,7 +25,16 @@ const adminRoutes = [
     element: <DashboardPanel />,
     children: [
       { index: true, element: <Navigate to="dashboard" replace /> },
-      { path: "inbox", element: <Inbox /> },
+      {
+        path: "inbox",
+        element: <Inbox />,
+        children: [
+          {
+            path: ":notificationId",
+            element: <ViewNotificationModal />,
+          },
+        ],
+      },
       { path: "dashboard", element: <AdminDashboard /> },
       {
         path: "employees",
@@ -87,7 +97,16 @@ const employeeRoutes = [
     children: [
       { index: true, element: <Navigate to="dashboard" replace /> },
       { path: "dashboard", element: <EmployeeDashboard /> },
-      { path: "inbox", element: <Inbox /> },
+      {
+        path: "inbox",
+        element: <Inbox />,
+        children: [
+          {
+            path: ":notificationId",
+            element: <ViewNotificationModal />,
+          },
+        ],
+      },
       {
         path: "projects",
         element: <Projects />,

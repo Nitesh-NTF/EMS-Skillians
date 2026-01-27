@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { MdClose } from "react-icons/md";
-import { FaBell } from "react-icons/fa";
 import { markAsRead, removeNotification } from "../../store/notificationSlice";
 import {
   markNotificationAsRead,
@@ -12,14 +12,24 @@ import { formatDate } from "../../utils/helpingFns";
 
 const NotificationItem = ({ notification }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleMarkAsRead = async () => {
+    if (notification.isRead) return;
+    
     try {
       await markNotificationAsRead(notification._id);
       dispatch(markAsRead(notification._id));
     } catch (error) {
       console.error("Error marking as read:", error);
     }
+  };
+
+  const handleView = async () => {
+    if (!notification.isRead) {
+      await handleMarkAsRead();
+    }
+    navigate(`/inbox/${notification._id}`);
   };
 
   const handleDelete = async () => {
@@ -34,14 +44,12 @@ const NotificationItem = ({ notification }) => {
   return (
     <div
       className={`p-1.5 hover:bg-gray-50 transition-colors cursor-pointer ${
-        !notification.isRead ? "bg-blue-50 border-blue-500" : ""
+        !notification.isRead ? "bg-blue-50 border-l-2 border-blue-500" : ""
       }`}
-      onClick={!notification.isRead ? handleMarkAsRead : undefined}
+      onClick={handleView}
     >
       <div className="flex items-start gap-1">
-        {/* Content */}
         <div className="flex-1 min-w-0">
-          {/* Title and Read Badge */}
           <div className="flex items-center gap-2">
             <h3 className="font-semibold text-gray-900 text-xs">
               {notification.title}
@@ -51,18 +59,15 @@ const NotificationItem = ({ notification }) => {
             )}
           </div>
 
-          {/* Message */}
           <p className="text-gray-600 text-xs mt-1 line-clamp-2">
             {notification.message}
           </p>
 
-          {/* Time */}
           <p className="text-gray-400 text-[8px] mt-1">
             {formatDate(notification.createdAt)}
           </p>
         </div>
 
-        {/* Actions */}
         <div className="flex gap-1">
           {!notification.isRead && (
             <button

@@ -29,7 +29,6 @@ export function getToday(timestamp) {
     return today
 }
 
-
 export const formatDate = (date) => {
     const d = new Date(date);
     const now = new Date();
@@ -45,6 +44,25 @@ export const formatDate = (date) => {
 
     return d.toLocaleDateString();
 };
+
+export const extractDateTimeFromCreatedAt = (createdAt) => {
+    if (!createdAt) return "";
+
+    const date = new Date(createdAt);
+
+    return {
+        date: date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+        }),
+        time: date.toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+        }),
+    };
+};
+
 
 export function getPercentage(part, total) { return ((part / total) * 100).toFixed(0) }
 
