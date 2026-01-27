@@ -9,6 +9,7 @@ import { SearchBar } from "../common/SearchBar";
 import { ReactIcons } from "../constants/react_icons";
 import { deleteEmployee, fetchEmployees } from "../../service/apis/employee";
 import { StatusBadge } from "../common/StatusBadge";
+import { EMPLOYEE_DISPLAY_TYPES } from "../constants/employeeDisplayTypes";
 
 export const ManageEmployee = ({
   search = false,
@@ -57,6 +58,7 @@ export const ManageEmployee = ({
       setLoading((prev) => ({ ...prev, user: true }));
       const res = await fetchEmployees({
         ...query,
+        display: EMPLOYEE_DISPLAY_TYPES.LIST,
         ...(pagination && { page, limit }),
         ...(projectId && { project: [projectId] }),
       });

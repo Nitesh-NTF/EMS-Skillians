@@ -4,6 +4,7 @@ import { Employee } from "../model/employee.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError, successResponse } from "../utils/cutomResponse.js";
 import { sendEmail } from "../utils/mailService.js";
+import { EMPLOYEE_FIELDS } from "../constants/employeeFields.js";
 
 export const login = asyncHandler(async (req, res) => {
     const { email, password } = req.body
@@ -26,7 +27,8 @@ export const login = asyncHandler(async (req, res) => {
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     })
 
-    return successResponse(res, 200, "Login successfully.", { ...user._doc, token, expiresIn: decode.exp * 1000 })
+    const authUser = await Employee.findById(user._id).select(EMPLOYEE_FIELDS.AUTH)
+    return successResponse(res, 200, "Login successfully.", { ...authUser._doc, token, expiresIn: decode.exp * 1000 })
 })
 
 export const logout = asyncHandler((req, res) => {

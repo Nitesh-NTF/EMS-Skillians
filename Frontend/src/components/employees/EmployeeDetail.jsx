@@ -10,6 +10,7 @@ import { getEmployee, toggleEmployeeStatus } from "../../service/apis/employee";
 import { fetchProjects } from "../../service/apis/project";
 import { getToday } from "../../utils/helpingFns";
 import { useCallback } from "react";
+import { EMPLOYEE_DISPLAY_TYPES } from "../constants/employeeDisplayTypes";
 
 const ProjectCol = [
   {
@@ -61,7 +62,7 @@ export const EmployeeDetail = () => {
 
   async function fetchUserData() {
     try {
-      const res = await getEmployee(empId);
+      const res = await getEmployee(empId, EMPLOYEE_DISPLAY_TYPES.DETAIL);
       setUser(res.data);
     } catch (error) {
       console.log("err: ", error);
@@ -99,10 +100,9 @@ export const EmployeeDetail = () => {
   };
 
   const handleSetStatus = async () => {
-    // setUser({ ...user, status: selectedStatus });
     setLoading(true);
     try {
-      const res = await toggleEmployeeStatus(empId, selectedStatus);
+      const res = await toggleEmployeeStatus(empId, selectedStatus, EMPLOYEE_DISPLAY_TYPES.DETAIL);
       setUser(res.data);
       toast.success(res.message);
     } catch (error) {

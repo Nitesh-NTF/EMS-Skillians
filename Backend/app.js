@@ -1,4 +1,6 @@
 import express from "express"
+import { configDotenv } from "dotenv";
+configDotenv();
 import cors from "cors"
 import cookieParser from "cookie-parser"
 import { createServer } from "http"

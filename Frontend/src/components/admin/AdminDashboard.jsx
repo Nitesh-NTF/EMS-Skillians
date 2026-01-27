@@ -21,6 +21,8 @@ import { useSelector } from "react-redux";
 import { getAdminStats } from "../../service/apis/admin";
 import toast from "react-hot-toast";
 import { ButtonLoader, PulseLoader, SkeletonLoader } from "../common/Loading";
+import { EMPLOYEE_DISPLAY_TYPES } from "../constants/employeeDisplayTypes";
+import { PROJECT_DISPLAY_TYPES } from "../constants/projectDisplayTypes";
 
 const graphData = [
   2.5,
@@ -134,7 +136,9 @@ export const AdminDashboard = () => {
 
   const fetchProjectsFn = async () => {
     try {
-      const res = await fetchProjects();
+      const res = await fetchProjects({ 
+        display: PROJECT_DISPLAY_TYPES.DASHBOARD,
+      });
       setProjects(res.data.projects);
     } catch (error) {
       console.log("error: ", error);

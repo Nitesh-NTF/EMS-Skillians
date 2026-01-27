@@ -10,6 +10,8 @@ import { SearchBar } from "../common/SearchBar";
 import { ReactIcons } from "../constants/react_icons";
 import { deleteProject, fetchProjects } from "../../service/apis/project";
 import { StatusBadge } from "../common/StatusBadge";
+import { PROJECT_DISPLAY_TYPES } from "../constants/projectDisplayTypes";
+import { EMPLOYEE_DISPLAY_TYPES } from "../constants/employeeDisplayTypes";
 
 export const ManageProjects = ({
   search = false,
@@ -56,10 +58,11 @@ export const ManageProjects = ({
     try {
       const res = await fetchProjects({
         ...query,
+        display: PROJECT_DISPLAY_TYPES.LIST,
+        employeeDisplay: EMPLOYEE_DISPLAY_TYPES.MINIMAL,
         ...(pagination && { page, limit }),
         ...(empId && { employees: [empId] }),
       });
-      // console.log("res.data", res.data);
       setProjects(res.data.projects);
       setTotal(res.data.pagination.total);
     } catch (error) {

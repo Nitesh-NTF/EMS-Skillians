@@ -5,6 +5,7 @@ import { asyncHandler } from "../utils/asyncHandler.js"
 import { isValidObjectId } from "mongoose"
 import { images } from "../constants/images.js"
 import { deleteImage, uploadImage } from "../utils/cloudinary.js"
+import { EMPLOYEE_FIELDS } from "../constants/employeeFields.js"
 
 export const addEmployee = asyncHandler(async (req, res) => {
     const { name, email, password, department, status, icon, role } = req.body
@@ -28,9 +29,11 @@ export const addEmployee = asyncHandler(async (req, res) => {
 
 export const getEmployee = asyncHandler(async (req, res) => {
     const { id } = req.params
+    const { display = 'DETAIL' } = req.query
     if (!isValidObjectId(id)) throw new ApiError(400, "Pass valid employee Id")
 
-    const employee = await Employee.findById(id).select("-password")
+    const fields = EMPLOYEE_FIELDS[display.toUpperCase()] || EMPLOYEE_FIELDS.DETAIL
+    const employee = await Employee.findById(id).select(fields)
     successResponse(res, 200, "Employee fetch successfully", employee)
 })
 
@@ -77,7 +80,7 @@ export const updateEmployee = asyncHandler(async (req, res) => {
 })
 
 export const fetchEmployees = asyncHandler(async (req, res) => {
-    let { page, limit, search, role, department, project } = req.query
+    let { page, limit, search, role, department, project, display = 'LIST' } = req.query
     const pageNum = page ? parseInt(page) : null;
     const limitNum = limit ? parseInt(limit) : null;
 
@@ -93,11 +96,13 @@ export const fetchEmployees = asyncHandler(async (req, res) => {
         query.projects = { $in: projectArr }
     }
 
+    const fields = EMPLOYEE_FIELDS[display.toUpperCase()] || EMPLOYEE_FIELDS.LIST
+
     let employees;
     if (limitNum && pageNum) {
-        employees = await Employee.find(query).limit(limitNum).skip((limitNum * pageNum) - limitNum).sort({ createdAt: -1 })
+        employees = await Employee.find(query).select(fields).limit(limitNum).skip((limitNum * pageNum) - limitNum).sort({ createdAt: -1 })
     } else {
-        employees = await Employee.find(query).sort({ createdAt: -1 })
+        employees = await Employee.find(query).select(fields).sort({ createdAt: -1 })
     }
     const total = await Employee.countDocuments(query)
     const pagination = { total, page: pageNum || 1, limit: limitNum || total }
@@ -105,7 +110,7 @@ export const fetchEmployees = asyncHandler(async (req, res) => {
 })
 
 export const toggleEmployeeStatus = asyncHandler(async (req, res) => {
-    const { id } = req.query
+    const { id, display = 'LIST' } = req.query
     const { status } = req.body
 
     if (!id) throw new ApiError(400, "Employee ID is required")
@@ -120,6 +125,7 @@ export const toggleEmployeeStatus = asyncHandler(async (req, res) => {
     const employee = await Employee.findById(id)
     if (!employee) throw new ApiError(400, "Employee not exists")
 
-    const updatedEmployee = await Employee.findByIdAndUpdate(id, { status }, { new: true }).select("-password")
+    const fields = EMPLOYEE_FIELDS[display.toUpperCase()] || EMPLOYEE_FIELDS.LIST
+    const updatedEmployee = await Employee.findByIdAndUpdate(id, { status }, { new: true }).select(fields)
     successResponse(res, 200, "Employee status updated successfully", updatedEmployee)
 })

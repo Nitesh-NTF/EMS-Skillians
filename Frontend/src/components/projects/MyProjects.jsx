@@ -10,6 +10,8 @@ import { ReactIcons } from "../constants/react_icons";
 import { fetchProjects } from "../../service/apis/project";
 import { getColorOnPercentage, getPercentage } from "../../utils/helpingFns";
 import { useNavigate } from "react-router-dom";
+import { PROJECT_DISPLAY_TYPES } from "../constants/projectDisplayTypes";
+import { EMPLOYEE_DISPLAY_TYPES } from "../constants/employeeDisplayTypes";
 
 export const MyProjects = () => {
   const [projects, setProjects] = useState([]);
@@ -29,7 +31,12 @@ export const MyProjects = () => {
 
   const fetchProjectsFn = useCallback(async () => {
     try {
-      const res = await fetchProjects({ ...query, employees: loggedUser._id });
+      const res = await fetchProjects({ 
+        ...query, 
+        employees: loggedUser._id,
+        display: PROJECT_DISPLAY_TYPES.CARD,
+        employeeDisplay: EMPLOYEE_DISPLAY_TYPES.MINIMAL
+      });
       setProjects(res.data.projects);
     } catch (error) {
       console.log("error: ", error);

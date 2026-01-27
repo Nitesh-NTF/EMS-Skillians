@@ -9,6 +9,7 @@ import { FullScreenLoader } from "../common/Loading";
 import { images } from "../constants/images";
 import { addProject, updateProject, getProject } from "../../service/apis/project";
 import { fetchEmployees } from "../../service/apis/employee";
+import { EMPLOYEE_DISPLAY_TYPES } from "../constants/employeeDisplayTypes";
 
 const initialState = {
   name: "",
@@ -98,7 +99,7 @@ export const AddProject = () => {
   async function fetchEmp() {
     setLoading(true);
     try {
-      const res = await fetchEmployees();
+      const res = await fetchEmployees({ display: EMPLOYEE_DISPLAY_TYPES.DROPDOWN });
       setEmployees(res.data.employees);
     } catch (error) {
       console.log("err: ", error);

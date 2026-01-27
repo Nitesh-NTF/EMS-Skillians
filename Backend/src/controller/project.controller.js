@@ -7,6 +7,8 @@ import { images } from "../constants/images.js"
 import { uploadImage, deleteImage } from "../utils/cloudinary.js"
 import { updateEmployeeInproject } from "../utils/notificationService.js"
 import { TimeEntry } from "../model/timeEntries.model.js"
+import { PROJECT_FIELDS } from "../constants/projectFields.js"
+import { EMPLOYEE_FIELDS } from "../constants/employeeFields.js"
 
 export const addProject = asyncHandler(async (req, res) => {
     const { name, category, client, estimatedHours, status, description, startDate, endDate, employees } = req.body
@@ -146,9 +148,11 @@ export const updateProject = asyncHandler(async (req, res) => {
 
 export const getProject = asyncHandler(async (req, res) => {
     const { id } = req.params
+    const { display = 'DETAIL' } = req.query
     if (!isValidObjectId(id)) throw new ApiError(400, "Pass valid project Id")
 
-    const project = await Project.findById(id)
+    const fields = PROJECT_FIELDS[display.toUpperCase()] || PROJECT_FIELDS.DETAIL
+    const project = await Project.findById(id).select(fields)
     successResponse(res, 200, "Project fetch successfully", project)
 })
 
@@ -179,7 +183,7 @@ export const deleteProject = asyncHandler(async (req, res) => {
 
 
 export const fetchProjects = asyncHandler(async (req, res) => {
-    let { page, limit, search, status, employees } = req.query
+    let { page, limit, search, status, employees, display = 'LIST', employeeDisplay } = req.query
     const pageNum = page ? parseInt(page) : null;
     const limitNum = limit ? parseInt(limit) : null;
 
@@ -190,21 +194,32 @@ export const fetchProjects = asyncHandler(async (req, res) => {
         const empArr = employees.split(",")
         query.employees = { $in: empArr }
     }
-    // else if (req.user?.role.includes("Employee") && req.user.role.length == 1) { query.employees = { $in: [req.user._id] } }
+
+    const projectFields = PROJECT_FIELDS[display.toUpperCase()] || PROJECT_FIELDS.LIST
 
     let projects;
-    if (limitNum && pageNum) {
-        projects = await Project.find(query).populate("employees", "name email icon").limit(limitNum).skip((limitNum * pageNum) - limitNum).sort({ createdAt: -1 })
+    if (employeeDisplay) {
+        const empFields = EMPLOYEE_FIELDS[employeeDisplay.toUpperCase()] || EMPLOYEE_FIELDS.MINIMAL
+        if (limitNum && pageNum) {
+            projects = await Project.find(query).select(projectFields).populate("employees", empFields).limit(limitNum).skip((limitNum * pageNum) - limitNum).sort({ createdAt: -1 })
+        } else {
+            projects = await Project.find(query).select(projectFields).populate("employees", empFields).sort({ createdAt: -1 })
+        }
     } else {
-        projects = await Project.find(query).populate("employees", "name email icon").sort({ createdAt: -1 })
+        if (limitNum && pageNum) {
+            projects = await Project.find(query).select(projectFields).limit(limitNum).skip((limitNum * pageNum) - limitNum).sort({ createdAt: -1 })
+        } else {
+            projects = await Project.find(query).select(projectFields).sort({ createdAt: -1 })
+        }
     }
+    
     const total = await Project.countDocuments(query)
     const pagination = { total, page: pageNum || 1, limit: limitNum || total }
     successResponse(res, 200, "Projects fetch successfully", { projects, pagination })
 })
 
 export const toggleProjectStatus = asyncHandler(async (req, res) => {
-    const { id } = req.query
+    const { id, display = 'LIST' } = req.query
     const { status } = req.body
 
     if (!id) throw new ApiError(400, "Project ID is required")
@@ -219,6 +234,7 @@ export const toggleProjectStatus = asyncHandler(async (req, res) => {
     const project = await Project.findById(id)
     if (!project) throw new ApiError(400, "Project not exists")
 
-    const updatedProject = await Project.findByIdAndUpdate(id, { status }, { new: true })
+    const fields = PROJECT_FIELDS[display.toUpperCase()] || PROJECT_FIELDS.LIST
+    const updatedProject = await Project.findByIdAndUpdate(id, { status }, { new: true }).select(fields)
     successResponse(res, 200, "Project status updated successfully", updatedProject)
 })

@@ -1,0 +1,10 @@
+export const PROJECT_DISPLAY_TYPES = {
+    LIST: 'LIST',
+    CARD: 'CARD',
+    DETAIL: 'DETAIL', 
+    DROPDOWN: 'DROPDOWN',
+    MINIMAL: 'MINIMAL',
+    SEARCH: 'SEARCH',
+    REPORT: 'REPORT',
+    DASHBOARD: 'DASHBOARD'
+}
