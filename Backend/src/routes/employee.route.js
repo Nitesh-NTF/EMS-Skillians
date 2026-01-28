@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addEmployee, deleteEmployee, fetchEmployees, getEmployee, updateEmployee, toggleEmployeeStatus } from "../controller/employee.controller.js";
+import { addEmployee, deleteEmployee, fetchEmployees, getEmployee, updateEmployee, toggleEmployeeStatus, changePassword } from "../controller/employee.controller.js";
 import { createEmployeeValidator, updateEmployeeValidator, toggleEmployeeStatusValidator } from "../middleware/employee.validator.js";
 import { upload } from "../utils/multer.js";
 
@@ -11,5 +11,6 @@ router.route("/:id").get(getEmployee)
 router.route("/").get(fetchEmployees)
 router.route("/:id").delete(deleteEmployee)
 router.route("/toggle-status").post(toggleEmployeeStatusValidator, toggleEmployeeStatus)
+router.route("/change-password").post(changePassword)
 
 export default router

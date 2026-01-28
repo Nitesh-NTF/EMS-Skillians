@@ -42,4 +42,8 @@ export const fetchEmployees = async (query = {}) => {
 
 export const toggleEmployeeStatus = async (id, status, display = EMPLOYEE_DISPLAY_TYPES.LIST) => {
     return API.post(`/api/employee/toggle-status?id=${id}&display=${display}`, { status }).then(res => res.data)
+}
+
+export const changePassword = async (id, data) => {
+    return API.post(`/api/employee/change-password`, data).then(res => res.data)
 } 

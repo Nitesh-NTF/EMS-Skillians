@@ -1,18 +1,316 @@
+// import { useState, useEffect } from "react";
+// import { useForm } from "react-hook-form";
+// import toast from "react-hot-toast";
+// import { images } from "../constants/images";
+// import { RequiredSign } from "../common/RequiredSign";
+// import { FullScreenLoader, SkeletonLoader } from "../common/Loading";
+// import { updateEmployee, getEmployee } from "../../service/apis/employee";
+// import { useSelector } from "react-redux";
+
+// export const PersonalDetails = () => {
+//   const loggedUser = useSelector((state) => state.auth.user);
+//   const [imagePreview, setImagePreview] = useState(null);
+//   const [loading, setLoading] = useState(false);
+//   const [isEditing, setIsEditing] = useState(false);
+//   const [currentUser, setCurrentUser] = useState(null);
+
+//   const {
+//     register,
+//     handleSubmit,
+//     reset,
+//     watch,
+//     setValue,
+//     formState: { errors },
+//   } = useForm();
+
+//   const icon = watch("icon");
+//   const password = watch("password");
+
+//   const handleImageChange = (e) => {
+//     const file = e.target.files[0];
+//     if (file) {
+//       setImagePreview(URL.createObjectURL(file));
+//       setValue("icon", file);
+//     }
+//   };
+
+//   const getCurrentUser = async () => {
+//     try {
+//       setLoading(true);
+//       const res = await getEmployee(loggedUser._id);
+//       setCurrentUser(res.data);
+//       reset({
+//         name: res.data.name,
+//         email: res.data.email,
+//         department: res.data.department,
+//         status: res.data.status,
+//         role: res.data.role,
+//         icon:res.data.icon
+//       });
+//       setImagePreview(res.data.icon);
+//     } catch (error) {
+//       console.log("Error fetching user:", error);
+//       toast.error("Failed to load user data");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const onSubmit = async (data) => {
+//     try {
+//       setLoading(true);
+//       const updateData = {
+//         ...data,
+//         _id: loggedUser._id,
+//       };
+
+//       const res = await updateEmployee(updateData);
+//       toast.success(res.message);
+//       setIsEditing(false);
+//       getCurrentUser(); // Refresh user data
+//     } catch (error) {
+//       console.log("Error updating profile:", error);
+//       toast.error(error.response?.data?.message || "Failed to update profile");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     getCurrentUser();
+//   }, []);
+
+//   if(loading){
+//     return <SkeletonLoader />;
+//   }
+
+//   if (!isEditing) {
+//     return (
+//       <div className="bg-white p-6">
+//           <div className="flex justify-between items-start mb-6">
+//           <h1 className="text-2xl font-bold text-[#215675]">
+//             Personal Details
+//           </h1>
+//           <button
+//             onClick={() => setIsEditing(true)}
+//             className="bg-[#215675] text-white px-4 py-2 rounded-sm text-sm hover:bg-[#1a4660]"
+//           >
+//             Edit Profile
+//           </button>
+//         </div>
+
+//         <div className="flex justify-between">
+//           <div className="flex-1">
+//             <div className="grid grid-cols-2 gap-6 text-sm">
+//               <div>
+//                 <p className="font-semibold text-gray-700">Name:</p>
+//                 <p className="text-[#666666]">{currentUser?.name || "N/A"}</p>
+//               </div>
+//               <div>
+//                 <p className="font-semibold text-gray-700">Email:</p>
+//                 <p className="text-[#666666]">{currentUser?.email || "N/A"}</p>
+//               </div>
+//               <div>
+//                 <p className="font-semibold text-gray-700">Department:</p>
+//                 <p className="text-[#666666]">
+//                   {currentUser?.department || "N/A"}
+//                 </p>
+//               </div>
+//               <div>
+//                 <p className="font-semibold text-gray-700">Status:</p>
+//                 <p className="text-[#666666]">{currentUser?.status || "N/A"}</p>
+//               </div>
+//               <div>
+//                 <p className="font-semibold text-gray-700">Role:</p>
+//                 <p className="text-[#666666]">
+//                   {currentUser?.role?.join(", ") || "N/A"}
+//                 </p>
+//               </div>
+//             </div>
+//           </div>
+
+//           <div className="flex flex-col items-center gap-3 ml-8">
+//             <img
+//               src={currentUser?.icon || images.defalutImage}
+//               alt="Profile"
+//               className="w-32 h-32 rounded-full object-cover border-4 border-[#215675]"
+//             />
+//             <strong className="text-[#215675]">{currentUser?.name}</strong>
+//           </div>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="bg-white p-6">
+//       <div className="flex justify-between items-start mb-6">
+//         <h1 className="text-2xl font-bold text-[#215675]">
+//           Edit Personal Details
+//         </h1>
+//       </div>
+
+//       <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl">
+//         {/* Profile Image */}
+//         <div className="mb-6">
+//           <label className="block text-sm font-medium mb-2">
+//             Profile Image
+//           </label>
+//           <input
+//             className="hidden"
+//             type="file"
+//             id="icon"
+//             accept="image/*"
+//             {...register("icon")}
+//             onChange={handleImageChange}
+//           />
+//           <div className="flex items-center gap-4">
+//             <img
+//               src={imagePreview || images.defalutImage}
+//               alt="Preview"
+//               className="w-24 h-24 rounded-full object-cover border-2 border-gray-300"
+//             />
+//             <div>
+//               <label
+//                 htmlFor="icon"
+//                 className="bg-blue-500 text-white py-2 px-4 text-sm rounded-sm cursor-pointer hover:bg-blue-600"
+//               >
+//                 Upload
+//               </label>
+//               <button
+//                 type="button"
+//                 onClick={() => {
+//                   setValue("icon", "");
+//                   setImagePreview(null);
+//                 }}
+//                 className="bg-red-500 text-white py-2 px-4 ml-2 text-sm rounded-sm hover:bg-red-600"
+//               >
+//                 Remove
+//               </button>
+//             </div>
+//           </div>
+//         </div>
+
+//         {/* Name */}
+//         <div className="mb-4">
+//           <label className="block text-sm font-medium mb-1">
+//             Name <RequiredSign />
+//           </label>
+//           <input
+//             className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-[#215675]"
+//             {...register("name", {
+//               required: "Name is required",
+//             })}
+//           />
+//           {errors.name && (
+//             <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
+//           )}
+//         </div>
+
+//         {/* Email */}
+//         <div className="mb-4">
+//           <label className="block text-sm font-medium mb-1">
+//             Email <RequiredSign />
+//           </label>
+//           <input
+//             className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-[#215675]"
+//             type="email"
+//             {...register("email", {
+//               required: "Email is required",
+//               pattern: {
+//                 value: /\S+@\S+\.\S+/,
+//                 message: "Invalid email format",
+//               },
+//             })}
+//           />
+//           {errors.email && (
+//             <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+//           )}
+//         </div>
+
+//         {/* Password */}
+//         <div className="mb-4">
+//           <label className="block text-sm font-medium mb-1">New Password</label>
+//           <input
+//             type="password"
+//             className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-[#215675]"
+//             {...register("password", {
+//               minLength: {
+//                 value: 6,
+//                 message: "Password must be at least 6 characters",
+//               },
+//             })}
+//           />
+//           {errors.password && (
+//             <p className="text-red-500 text-xs mt-1">
+//               {errors.password.message}
+//             </p>
+//           )}
+//           <p className="text-gray-500 text-xs mt-1">
+//             Leave blank to keep current password
+//           </p>
+//         </div>
+
+//         {/* Confirm Password */}
+//         {password && (
+//           <div className="mb-4">
+//             <label className="block text-sm font-medium mb-1">
+//               Confirm Password <RequiredSign />
+//             </label>
+//             <input
+//               type="password"
+//               className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-[#215675]"
+//               {...register("confirmPassword", {
+//                 required: password ? "Please confirm your password" : false,
+//                 validate: (value) =>
+//                   value === password || "Passwords do not match",
+//               })}
+//             />
+//             {errors.confirmPassword && (
+//               <p className="text-red-500 text-xs mt-1">
+//                 {errors.confirmPassword.message}
+//               </p>
+//             )}
+//           </div>
+//         )}
+
+//         {/* Submit Button */}
+//         <div className="flex gap-3">
+//           <button
+//             type="submit"
+//             className="bg-[#215675] text-white px-6 py-2 rounded-sm hover:bg-[#1a4660] transition-colors"
+//           >
+//             Update Profile
+//           </button>
+//           <button
+//             type="button"
+//             onClick={() => setIsEditing(false)}
+//             className="bg-gray-500 text-white px-6 py-2 rounded-sm hover:bg-gray-600 transition-colors"
+//           >
+//             Cancel
+//           </button>
+//         </div>
+//       </form>
+//     </div>
+//   );
+// };
+
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { images } from "../constants/images";
 import { RequiredSign } from "../common/RequiredSign";
-import { FullScreenLoader, SkeletonLoader } from "../common/Loading";
+import { ButtonLoader, SkeletonLoader } from "../common/Loading";
 import { updateEmployee, getEmployee } from "../../service/apis/employee";
 import { useSelector } from "react-redux";
+import { ChangePassword } from "../common/ChangePassword";
 
 export const PersonalDetails = () => {
   const loggedUser = useSelector((state) => state.auth.user);
-  const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
   const {
     register,
@@ -24,8 +322,6 @@ export const PersonalDetails = () => {
   } = useForm();
 
   const icon = watch("icon");
-  const password = watch("password");
-
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -42,14 +338,13 @@ export const PersonalDetails = () => {
       reset({
         name: res.data.name,
         email: res.data.email,
+        icon: res.data.icon,
         department: res.data.department,
         status: res.data.status,
         role: res.data.role,
-        icon:res.data.icon
       });
       setImagePreview(res.data.icon);
     } catch (error) {
-      console.log("Error fetching user:", error);
       toast.error("Failed to load user data");
     } finally {
       setLoading(false);
@@ -59,18 +354,15 @@ export const PersonalDetails = () => {
   const onSubmit = async (data) => {
     try {
       setLoading(true);
-      const updateData = {
-        ...data,
+      const res = await updateEmployee({
         _id: loggedUser._id,
-      };
-
-      const res = await updateEmployee(updateData);
+        ...data,
+      });
       toast.success(res.message);
       setIsEditing(false);
-      getCurrentUser(); // Refresh user data
+      getCurrentUser();
     } catch (error) {
-      console.log("Error updating profile:", error);
-      toast.error(error.response?.data?.message || "Failed to update profile");
+      toast.error("Failed to update profile");
     } finally {
       setLoading(false);
     }
@@ -80,217 +372,147 @@ export const PersonalDetails = () => {
     getCurrentUser();
   }, []);
 
-  if(loading){
-    return <SkeletonLoader />;
-  }
+  // if (loading) return <SkeletonLoader />;
 
-  if (!isEditing) {
-    return (
-      <div className="bg-white p-6">
-          <div className="flex justify-between items-start mb-6">
+  return (
+    <>
+      {/* PERSONAL DETAILS CARD */}
+      <div className="bg-white p-6 mb-6">
+        <div className="flex justify-between items-start mb-6">
           <h1 className="text-2xl font-bold text-[#215675]">
             Personal Details
           </h1>
-          <button
-            onClick={() => setIsEditing(true)}
-            className="bg-[#215675] text-white px-4 py-2 rounded-sm text-sm hover:bg-[#1a4660]"
-          >
-            Edit Profile
-          </button>
+          {!isEditing && (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="bg-[#215675] text-white px-4 py-2 rounded-sm text-sm"
+            >
+              Edit
+            </button>
+          )}
         </div>
 
-        <div className="flex justify-between">
-          <div className="flex-1">
-            <div className="grid grid-cols-2 gap-6 text-sm">
-              <div>
-                <p className="font-semibold text-gray-700">Name:</p>
-                <p className="text-[#666666]">{currentUser?.name || "N/A"}</p>
-              </div>
-              <div>
-                <p className="font-semibold text-gray-700">Email:</p>
-                <p className="text-[#666666]">{currentUser?.email || "N/A"}</p>
-              </div>
-              <div>
-                <p className="font-semibold text-gray-700">Department:</p>
-                <p className="text-[#666666]">
-                  {currentUser?.department || "N/A"}
-                </p>
-              </div>
-              <div>
-                <p className="font-semibold text-gray-700">Status:</p>
-                <p className="text-[#666666]">{currentUser?.status || "N/A"}</p>
-              </div>
-              <div>
-                <p className="font-semibold text-gray-700">Role:</p>
-                <p className="text-[#666666]">
-                  {currentUser?.role?.join(", ") || "N/A"}
-                </p>
-              </div>
+        {!isEditing ? (
+          <div className="flex justify-between">
+            <div className="grid grid-cols-2 gap-6 text-sm flex-1">
+              <Detail label="Name" value={currentUser?.name} />
+              <Detail label="Email" value={currentUser?.email} />
+              <Detail label="Department" value={currentUser?.department} />
+              <Detail label="Status" value={currentUser?.status} />
+              <Detail label="Role" value={currentUser?.role?.join(", ")} />
+            </div>
+
+            <div className="flex flex-col items-center gap-3 ml-8">
+              <img
+                src={currentUser?.icon || images.defalutImage}
+                alt="Profile"
+                className="w-32 h-32 rounded-full object-cover border-4 border-[#215675]"
+              />
+              <strong className="text-[#215675]">{currentUser?.name}</strong>
             </div>
           </div>
-
-          <div className="flex flex-col items-center gap-3 ml-8">
-            <img
-              src={currentUser?.icon || images.defalutImage}
-              alt="Profile"
-              className="w-32 h-32 rounded-full object-cover border-4 border-[#215675]"
-            />
-            <strong className="text-[#215675]">{currentUser?.name}</strong>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="bg-white p-6">
-      <div className="flex justify-between items-start mb-6">
-        <h1 className="text-2xl font-bold text-[#215675]">
-          Edit Personal Details
-        </h1>
-      </div>
-
-      <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl">
-        {/* Profile Image */}
-        <div className="mb-6">
-          <label className="block text-sm font-medium mb-2">
-            Profile Image
-          </label>
-          <input
-            className="hidden"
-            type="file"
-            id="icon"
-            accept="image/*"
-            {...register("icon")}
-            onChange={handleImageChange}
-          />
-          <div className="flex items-center gap-4">
-            <img
-              src={imagePreview || images.defalutImage}
-              alt="Preview"
-              className="w-24 h-24 rounded-full object-cover border-2 border-gray-300"
-            />
-            <div>
-              <label
-                htmlFor="icon"
-                className="bg-blue-500 text-white py-2 px-4 text-sm rounded-sm cursor-pointer hover:bg-blue-600"
-              >
-                Upload
+        ) : (
+          <form onSubmit={handleSubmit(onSubmit)} className="max-w-md">
+            {/* Profile Image */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium mb-2">
+                Profile Image
               </label>
+
+              <input
+                type="file"
+                hidden
+                id="icon"
+                accept="image/*"
+                {...register("icon")}
+                onChange={handleImageChange}
+              />
+
+              <div className="flex items-center gap-4">
+                <img
+                  src={imagePreview || images.defalutImage}
+                  alt="Preview"
+                  className="w-24 h-24 rounded-full object-cover border"
+                />
+
+                <label
+                  htmlFor="icon"
+                  className="bg-[#215675] text-white px-4 py-2 text-sm rounded-sm cursor-pointer"
+                >
+                  Upload
+                </label>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setValue("icon", "");
+                    setImagePreview(null);
+                  }}
+                  className="bg-red-500 text-white px-4 py-2 text-sm rounded-sm"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+
+            {/* Name */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">
+                Name <RequiredSign />
+              </label>
+              <input
+                className="input"
+                {...register("name", { required: "Name is required" })}
+              />
+            </div>
+
+            {/* Email */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium mb-1">
+                Email <RequiredSign />
+              </label>
+              <input
+                type="email"
+                className="input"
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /\S+@\S+\.\S+/,
+                    message: "Invalid email format",
+                  },
+                })}
+              />
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                type="submit"
+                className="bg-[#215675] text-white px-6 py-2 rounded-sm"
+              >
+                {loading ? <ButtonLoader /> : "Update"}
+              </button>
+
               <button
                 type="button"
-                onClick={() => {
-                  setValue("icon", "");
-                  setImagePreview(null);
-                }}
-                className="bg-red-500 text-white py-2 px-4 ml-2 text-sm rounded-sm hover:bg-red-600"
+                onClick={() => setIsEditing(false)}
+                className="bg-gray-500 text-white px-6 py-2 rounded-sm"
               >
-                Remove
+                Cancel
               </button>
             </div>
-          </div>
-        </div>
-
-        {/* Name */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">
-            Name <RequiredSign />
-          </label>
-          <input
-            className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-[#215675]"
-            {...register("name", {
-              required: "Name is required",
-            })}
-          />
-          {errors.name && (
-            <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
-          )}
-        </div>
-
-        {/* Email */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">
-            Email <RequiredSign />
-          </label>
-          <input
-            className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-[#215675]"
-            type="email"
-            {...register("email", {
-              required: "Email is required",
-              pattern: {
-                value: /\S+@\S+\.\S+/,
-                message: "Invalid email format",
-              },
-            })}
-          />
-          {errors.email && (
-            <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
-          )}
-        </div>
-
-        {/* Password */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">New Password</label>
-          <input
-            type="password"
-            className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-[#215675]"
-            {...register("password", {
-              minLength: {
-                value: 6,
-                message: "Password must be at least 6 characters",
-              },
-            })}
-          />
-          {errors.password && (
-            <p className="text-red-500 text-xs mt-1">
-              {errors.password.message}
-            </p>
-          )}
-          <p className="text-gray-500 text-xs mt-1">
-            Leave blank to keep current password
-          </p>
-        </div>
-
-        {/* Confirm Password */}
-        {password && (
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">
-              Confirm Password <RequiredSign />
-            </label>
-            <input
-              type="password"
-              className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-[#215675]"
-              {...register("confirmPassword", {
-                required: password ? "Please confirm your password" : false,
-                validate: (value) =>
-                  value === password || "Passwords do not match",
-              })}
-            />
-            {errors.confirmPassword && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.confirmPassword.message}
-              </p>
-            )}
-          </div>
+          </form>
         )}
+      </div>
 
-        {/* Submit Button */}
-        <div className="flex gap-3">
-          <button
-            type="submit"
-            className="bg-[#215675] text-white px-6 py-2 rounded-sm hover:bg-[#1a4660] transition-colors"
-          >
-            Update Profile
-          </button>
-          <button
-            type="button"
-            onClick={() => setIsEditing(false)}
-            className="bg-gray-500 text-white px-6 py-2 rounded-sm hover:bg-gray-600 transition-colors"
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
+      {/* CHANGE PASSWORD CARD */}
+      <ChangePassword />
+    </>
   );
 };
+
+const Detail = ({ label, value }) => (
+  <div>
+    <p className="font-semibold text-gray-700">{label}:</p>
+    <p className="text-[#666666]">{value || "N/A"}</p>
+  </div>
+);

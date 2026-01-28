@@ -85,7 +85,15 @@ export const ManageEmployee = ({
   return (
     <div>
       {/* title */}
-      {title && <BackButton title="Employee Management" />}
+      {title && (
+        <BackButton 
+          title="Employee Management" 
+          showExport
+          data={user}
+          fileName="EmployeesData"
+          exportLabel="Export Employees"
+        />
+      )}
 
       <div className="text-gray-600 flex items-center gap-8 my-4">
         {/* search */}

@@ -86,7 +86,15 @@ export const ManageProjects = ({
   return (
     <div>
       {/* title */}
-      {title && <BackButton title="Project Management" />}
+      {title && (
+        <BackButton 
+          title="Project Management" 
+          showExport
+          data={projects}
+          fileName="ProjectsData"
+          exportLabel="Export Projects"
+        />
+      )}
 
       <div className="text-gray-600 flex items-center gap-8 my-4">
         {/* search */}

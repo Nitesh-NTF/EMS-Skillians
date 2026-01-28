@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Box, LinearProgress } from "@mui/material";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { PieChart } from "@mui/x-charts";
-import CountUp from "react-countup"
+import CountUp from "react-countup";
 import { Table } from "../common/Table";
 import { BackButton } from "../common/BackButton";
 import { Card } from "../common/Card";
@@ -136,7 +136,7 @@ export const AdminDashboard = () => {
 
   const fetchProjectsFn = async () => {
     try {
-      const res = await fetchProjects({ 
+      const res = await fetchProjects({
         display: PROJECT_DISPLAY_TYPES.DASHBOARD,
       });
       setProjects(res.data.projects);
@@ -171,6 +171,9 @@ export const AdminDashboard = () => {
       <BackButton
         title="Admin Dashboard"
         caption="Overview of system performance and activity"
+        showExport
+        data={stats}
+        fileName="AdminStats"
       />
       <div className="flex gap-13 my-4">
         <Card className="text-xs p-5 min-w-max h-full">
@@ -184,7 +187,7 @@ export const AdminDashboard = () => {
             <>
               <p>Total Employee</p>
               <p className="text-[#215675] text-4xl my-3">
-                 <CountUp end={stats.totalEmployees} duration={1}/>
+                <CountUp end={stats.totalEmployees} duration={1} />
               </p>
               <p className="flex items-center gap-1 text-[#E7873B]">
                 <ReactIcons.FaUsers /> this month
@@ -203,7 +206,7 @@ export const AdminDashboard = () => {
             <>
               <p>Work Hours (Month)</p>
               <p className="text-[#215675] text-4xl my-3">
-               <CountUp end={stats.totalWorkHours} duration={1}/>
+                <CountUp end={stats.totalWorkHours} duration={1} />
               </p>
               <p className="flex items-center gap-1 text-[#E7873B]">
                 <ReactIcons.FaClock /> this month
@@ -220,7 +223,10 @@ export const AdminDashboard = () => {
                 <h1 className="text-base">Active Projects</h1>
                 <div className="text-[8px] text-center font-light">
                   Totol Projects
-                  <p className="text-sm"> <CountUp end={stats.totalProjects} duration={1}/></p>
+                  <p className="text-sm">
+                    {" "}
+                    <CountUp end={stats.totalProjects} duration={1} />
+                  </p>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-2.5 py-2.5 px-5 text-[#6E7176]">

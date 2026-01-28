@@ -146,8 +146,8 @@ export const EmployeeDashboard = () => {
           </div>
         </Card>
 
-        <h1 className="text-base mb-4 text-center">Work Time Entries</h1>
-        <WorkTImeEntries key={reloadKey} isLoggedUser={true} />
+        {/* <h1 className="text-base mb-4 text-center">Work Time Entries</h1> */}
+        <WorkTImeEntries key={reloadKey} isLoggedUser={true} showHeader={true} />
       </div>
     </div>
   );

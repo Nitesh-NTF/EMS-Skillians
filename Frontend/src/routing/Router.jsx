@@ -46,7 +46,7 @@ const adminRoutes = [
               {
                 element: <EmployeeDetail />,
                 children: [
-                  { path: "workTimeEntries", element: <WorkTImeEntries /> },
+                  { path: "workTimeEntries", element: <WorkTImeEntries showHeader={false} /> },
                   {
                     path: "project",
                     element: <ManageProjects search={true} />,
@@ -70,7 +70,7 @@ const adminRoutes = [
               {
                 element: <ProjectDetails />,
                 children: [
-                  { path: "workTimeEntries", element: <WorkTImeEntries /> },
+                  { path: "workTimeEntries", element: <WorkTImeEntries showHeader={false} /> },
                   {
                     path: "employee",
                     element: <ManageEmployee search={true} />,
@@ -117,7 +117,7 @@ const employeeRoutes = [
               {
                 element: <ProjectDetails />,
                 children: [
-                  { path: "workTimeEntries", element: <WorkTImeEntries /> },
+                  { path: "workTimeEntries", element: <WorkTImeEntries showHeader={false} /> },
                   {
                     path: "employee",
                     element: <ManageEmployee search={true} />,

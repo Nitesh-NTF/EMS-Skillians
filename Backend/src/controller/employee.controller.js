@@ -129,3 +129,27 @@ export const toggleEmployeeStatus = asyncHandler(async (req, res) => {
     const updatedEmployee = await Employee.findByIdAndUpdate(id, { status }, { new: true }).select(fields)
     successResponse(res, 200, "Employee status updated successfully", updatedEmployee)
 })
+
+export const changePassword = asyncHandler(async (req, res) => {
+    const id = req.user._id
+    console.log('id', id)
+    const { currentPassword, newPassword } = req.body
+
+    if (!currentPassword || !newPassword) throw new ApiError(400, "Current password and new password are required")
+    if (newPassword.length < 6) throw new ApiError(400, "New password must be at least 6 characters long")
+
+    const user = await Employee.findById(id).select("+password")
+    if (!user) throw new ApiError(404, "User not found")
+
+    const isPasswordCorrect = await bcrypt.compare(currentPassword, user.password)
+    if (!isPasswordCorrect) throw new ApiError(400, "Current password is incorrect")
+
+    const isSamePassword = await bcrypt.compare(newPassword, user.password)
+    if (isSamePassword) throw new ApiError(400, "New password cannot be same as old password")
+
+    const salt = await bcrypt.genSalt(10)
+    user.password = await bcrypt.hash(newPassword, salt)
+    await user.save()
+
+    successResponse(res, 200, "Password changed successfully")
+})

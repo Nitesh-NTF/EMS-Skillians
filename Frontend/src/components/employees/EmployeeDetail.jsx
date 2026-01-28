@@ -121,6 +121,10 @@ export const EmployeeDetail = () => {
         path="/employees"
         btnName="Back To Employees"
         title="Employee Details"
+        showExport
+        data={user}
+        fileName={`Employee_${user?.name || 'Details'}`}
+        exportLabel="Export Details"
       />
       {/* profile */}
       <div className="grid grid-cols-2 items-center my-5 bg-white text-[#646464] text-xs rounded-xs">

@@ -63,6 +63,18 @@ export const extractDateTimeFromCreatedAt = (createdAt) => {
     };
 };
 
-
 export function getPercentage(part, total) { return ((part / total) * 100).toFixed(0) }
 
+export const exportToJSON = (data, fileName = "data.json") => {
+  const blob = new Blob([JSON.stringify(data, null, 2)], {
+    type: "application/json",
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  link.click();
+
+  URL.revokeObjectURL(url);
+};

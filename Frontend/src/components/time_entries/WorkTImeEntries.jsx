@@ -4,11 +4,12 @@ import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { Table } from "../common/Table";
 import { Pagination } from "../common/Pagination";
+import { BackButton } from "../common/BackButton";
 import { ReactIcons } from "../constants/react_icons";
 import { fetchTimeEntries } from "../../service/apis/timeEntries";
 import { getTime, getToday } from "../../utils/helpingFns";
 
-export const WorkTImeEntries = ({ isLoggedUser = false }) => {
+export const WorkTImeEntries = ({ isLoggedUser = false, showHeader = true }) => {
   const [timeEntries, setTimeEntries] = useState([]);
   const timerRef = useRef();
   const { empId, projectId } = useParams();
@@ -53,6 +54,16 @@ export const WorkTImeEntries = ({ isLoggedUser = false }) => {
 
   return (
     <div>
+      {showHeader && (
+        <BackButton 
+          title="Work Time Entries" 
+          showExport
+          data={timeEntries}
+          fileName="WorkTimeEntriesData"
+          exportLabel="Export Time Entries"
+        />
+      )}
+      
       <div className="bg-[#EEEEF0] rounded-2xl flex items-center px-7 mb-2">
         <ReactIcons.IoSearchSharp className="text-[#7a7c8f] text-xl" />
         <input
