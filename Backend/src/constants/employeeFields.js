@@ -3,7 +3,7 @@ export const EMPLOYEE_FIELDS = {
     CARD: 'name department status icon role',
     DETAIL: 'name email department status icon role projects createdAt updatedAt',
     DROPDOWN: 'name department status',
-    AUTH: 'name email department status icon role',
+    AUTH: 'name email department status icon role isClockIn token tokenExpiry',
     MINIMAL: 'name icon',
     SEARCH: 'name email department icon',
     REPORT: 'name department status role createdAt',

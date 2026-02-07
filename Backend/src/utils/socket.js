@@ -8,19 +8,19 @@ export const setupSocketHandlers = (io) => {
         const userId = socket.userId;
         const userRoom = `user_${userId}`;
 
-        console.log(`\n🔌 New socket connection: ${socket.id}`);
-        console.log(`👤 User ID: ${userId}`);
-        console.log(`🏠 User Room: ${userRoom}`);
+        // console.log(`\n🔌 New socket connection: ${socket.id}`);
+        // console.log(`👤 User ID: ${userId}`);
+        // console.log(`🏠 User Room: ${userRoom}`);
 
         // Auto-join user to their personal room
         socket.join(userRoom);
-        console.log(`✅ Socket joined room: ${userRoom}`);
+        // console.log(`✅ Socket joined room: ${userRoom}`);
 
         // Listen for disconnect
         socket.on("disconnect", () => {
-            console.log(`\n❌ Socket disconnected: ${socket.id}`);
-            console.log(`👤 User ID: ${userId}`);
-            console.log(`🏠 Left room: ${userRoom}`);
+            // console.log(`\n❌ Socket disconnected: ${socket.id}`);
+            // console.log(`👤 User ID: ${userId}`);
+            // console.log(`🏠 Left room: ${userRoom}`);
         });
 
         // Handle socket errors

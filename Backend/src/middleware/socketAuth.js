@@ -1,12 +1,17 @@
 import jwt from "jsonwebtoken";
 import { ApiError } from "../utils/cutomResponse.js";
 
+
 export const socketAuthMiddleware = (socket, next) => {
     try {
-        // Get token from handshake auth or query
-        const token = socket.handshake.auth?.token ||
+        const token = socket.handshake.headers.cookie
+            ?.split('; ')
+            ?.find(row => row.startsWith('accessToken='))
+            ?.split('=')[1] ||
+            socket.handshake.auth?.token ||
             socket.handshake.headers?.authorization?.split(" ")[1];
 
+        console.log('token', token)
         if (!token) {
             return next(new ApiError(401, "❌ Authentication error: No token provided"));
         }

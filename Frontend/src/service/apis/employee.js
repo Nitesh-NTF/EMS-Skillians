@@ -46,4 +46,8 @@ export const toggleEmployeeStatus = async (id, status, display = EMPLOYEE_DISPLA
 
 export const changePassword = async (id, data) => {
     return API.post(`/api/employee/change-password`, data).then(res => res.data)
+}
+
+export const clockInOut = async (data) => {
+    return API.post(`/api/employee/clock-in-out`, data).then(res => res.data)
 } 

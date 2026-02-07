@@ -21,6 +21,11 @@ export const login = asyncHandler(async (req, res) => {
     if (!token) throw new ApiError(500, "Unable to generate token.")
 
     const decode = jwt.decode(token)
+    const tokenExpiry = decode.exp * 1000
+
+    // Update user with token and expiry
+    await Employee.findByIdAndUpdate(user._id, { token, tokenExpiry })
+
     res.cookie("accessToken", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -28,10 +33,13 @@ export const login = asyncHandler(async (req, res) => {
     })
 
     const authUser = await Employee.findById(user._id).select(EMPLOYEE_FIELDS.AUTH)
-    return successResponse(res, 200, "Login successfully.", { ...authUser._doc, token, expiresIn: decode.exp * 1000 })
+    return successResponse(res, 200, "Login successfully.", authUser)
 })
 
-export const logout = asyncHandler((req, res) => {
+export const logout = asyncHandler(async (req, res) => {
+    // Clear token from user document
+    await Employee.findByIdAndUpdate(req.user._id, { token: null, tokenExpiry: null })
+
     res.clearCookie("accessToken", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -87,4 +95,16 @@ export const resetPassword = asyncHandler(async (req, res) => {
     user.save()
 
     return successResponse(res, 200, "Password reset successfully.")
+})
+
+export const me = asyncHandler(async (req, res) => {
+    console.log('req.user._id', req.user._id)
+    const authUser = await Employee.findById(req.user._id).select(EMPLOYEE_FIELDS.AUTH)
+    return successResponse(res, 200, "User fetched successfully.", authUser)
+})
+
+export const getLoggedUser = asyncHandler(async (req, res) => {
+    const user = await Employee.findById(req.user._id).select(EMPLOYEE_FIELDS.AUTH)
+    if (!user) throw new ApiError(404, "User not found.")
+    return successResponse(res, 200, "User fetched successfully.", user)
 })

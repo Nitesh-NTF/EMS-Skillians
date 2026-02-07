@@ -35,6 +35,16 @@ const employeeSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Project"
     }],
+    isClockIn: {
+        type: Boolean,
+        default: false
+    },
+    token: {
+        type: String
+    },
+    tokenExpiry: {
+        type: Date
+    },
 }, { timestamps: true });
 
 

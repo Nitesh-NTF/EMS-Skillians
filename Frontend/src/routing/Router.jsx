@@ -149,7 +149,7 @@ const renderRoutes = (routes) => {
 
 const ProtectedRoute = () => {
   const { isLogged, user } = useSelector((state) => state.auth);
-
+  console.log('protectedRoute islogged: ', isLogged)
   if (!isLogged) {
     return <Navigate to="/login" replace />;
   }

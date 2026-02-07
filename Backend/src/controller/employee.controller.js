@@ -153,3 +153,25 @@ export const changePassword = asyncHandler(async (req, res) => {
 
     successResponse(res, 200, "Password changed successfully")
 })
+
+export const clockInOut = asyncHandler(async (req, res) => {
+    const id = req.user._id
+    const { clockIn, clockOut } = req.body
+
+    const user = await Employee.findById(id)
+    if (!user) throw new ApiError(404, "User not found")
+
+    let payload = {}
+    if (clockIn) {
+        payload.clockIn = clockIn
+        payload.isClockIn = true
+    }
+    if (clockOut) {
+        payload.clockOut = clockOut
+        payload.isClockIn = false
+    }
+
+    await Employee.findByIdAndUpdate(id, payload)
+    const action = clockIn ? "Clock-in" : "Clock-out"
+    successResponse(res, 200, `${action} successful`)
+})

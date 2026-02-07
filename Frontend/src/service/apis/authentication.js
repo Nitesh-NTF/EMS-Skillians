@@ -16,3 +16,7 @@ export const resetPassword = async (data) => {
     return await API.post("/reset-password", data).then(res => res.data)
 }
 
+export const me = async () => {
+    return await API.get("/me").then(res => res.data)
+}
+

@@ -21,7 +21,7 @@ API.interceptors.response.use(
       store.dispatch(logout());
 
       // Redirect to login
-      window.location.href = "/login";
+      // window.location.href = "/login";
     }
     console.log('error', error)
     return Promise.reject(error);

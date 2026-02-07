@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 
 let socket = null;
 
-export const initializeSocket = (token) => {
+export const initializeSocket = () => {
     if (socket?.connected) {
         console.log("✅ Socket already connected");
         return socket;
@@ -14,9 +14,7 @@ export const initializeSocket = (token) => {
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
 
     socket = io(BACKEND_URL, {
-        auth: {
-            token: token
-        },
+        withCredentials: true,
         reconnection: true,
         reconnectionDelay: 1000,
         reconnectionDelayMax: 5000,
